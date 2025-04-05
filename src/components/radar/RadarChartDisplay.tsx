@@ -101,28 +101,28 @@ export const RadarChartDisplay = ({
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[150px]">Asset</TableHead>
-                {criteriaNames.map((criterion, index) => (
-                  <TableHead key={index} className="text-center">{criterion}</TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {concepts.map((concept, conceptIndex) => (
-                <TableRow key={conceptIndex} className={highlighted === concept.name ? "bg-muted/20" : ""}>
-                  <TableCell className="font-medium">
-                    <div className="flex items-center gap-2">
+                <TableHead className="w-[150px]">Criteria</TableHead>
+                {concepts.map((concept, index) => (
+                  <TableHead key={index} className="text-center">
+                    <div className="flex flex-col items-center gap-2">
                       <div 
                         className="w-3 h-3 rounded-full" 
                         style={{ backgroundColor: concept.color }}
                       ></div>
                       {concept.name}
                     </div>
-                  </TableCell>
-                  {criteriaNames.map((criterion, criterionIndex) => {
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {criteriaNames.map((criterion, criterionIndex) => (
+                <TableRow key={criterionIndex}>
+                  <TableCell className="font-medium">{criterion}</TableCell>
+                  {concepts.map((concept, conceptIndex) => {
                     const value = chartData[criterionIndex][concept.name];
                     return (
-                      <TableCell key={criterionIndex} className="text-center">
+                      <TableCell key={conceptIndex} className="text-center">
                         <span className="font-mono">{value}</span>
                       </TableCell>
                     );
