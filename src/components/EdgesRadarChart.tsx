@@ -37,16 +37,10 @@ const EdgesRadarChart = ({ concepts }: EdgesRadarChartProps) => {
         dataPoint[concept.name] = concept[criterion.name as keyof Omit<Concept, "name" | "color">];
       });
 
-      // Add the average value to display in the label
-      if (concepts.length > 0) {
-        let sum = 0;
-        concepts.forEach((concept) => {
-          sum += concept[criterion.name as keyof Omit<Concept, "name" | "color">] as number;
-        });
-        dataPoint.average = Math.round((sum / concepts.length) * 10) / 10; // Round to 1 decimal
-      } else {
-        dataPoint.average = 0;
-      }
+      // Add individual concept scores for label display
+      concepts.forEach((concept) => {
+        dataPoint[`${concept.name}_value`] = concept[criterion.name as keyof Omit<Concept, "name" | "color">];
+      });
 
       return dataPoint;
     });
@@ -74,7 +68,6 @@ const EdgesRadarChart = ({ concepts }: EdgesRadarChartProps) => {
   // Custom rendering function for labels with metrics
   const renderPolarAngleAxisTick = (props: any) => {
     const { x, y, payload, textAnchor, fontSize } = props;
-    const value = chartData.find(item => item.criterion === payload.value)?.average || 0;
     
     return (
       <g transform={`translate(${x},${y})`}>
@@ -88,16 +81,26 @@ const EdgesRadarChart = ({ concepts }: EdgesRadarChartProps) => {
         >
           {payload.value}
         </text>
-        <text
-          x={0}
-          y={16}
-          textAnchor={textAnchor}
-          fill="#4B5563"
-          fontSize={9}
-          fontWeight={500}  // Kept the same font weight as the label
-        >
-          ({value})
-        </text>
+        
+        {/* Render individual concept values with their respective colors */}
+        {concepts.length > 0 ? (
+          concepts.map((concept, index) => {
+            const value = chartData.find(item => item.criterion === payload.value)?.[`${concept.name}_value`] || 0;
+            return (
+              <text
+                key={index}
+                x={0}
+                y={16 + (index * 12)} // Stack the values vertically with spacing
+                textAnchor={textAnchor}
+                fill={concept.color || "#4B5563"}
+                fontSize={9}
+                fontWeight={500}
+              >
+                {concept.name}: {value}
+              </text>
+            );
+          })
+        ) : null}
       </g>
     );
   };
@@ -105,15 +108,15 @@ const EdgesRadarChart = ({ concepts }: EdgesRadarChartProps) => {
   return (
     <ResponsiveContainer width="100%" height="100%">
       <RadarChart 
-        outerRadius="70%" 
+        outerRadius="60%" // Reduced to make room for the labels
         data={chartData}
-        margin={{ top: 25, right: 25, bottom: 25, left: 25 }} // Increased margins for better label visibility
+        margin={{ top: 25, right: 25, bottom: 25, left: 25 }}
       >
         <PolarGrid strokeDasharray="3 3" />
         <PolarAngleAxis
           dataKey="criterion"
           tick={renderPolarAngleAxisTick}
-          axisLine={false} // Remove axis line for cleaner look
+          axisLine={false}
         />
         <PolarRadiusAxis
           angle={90}
