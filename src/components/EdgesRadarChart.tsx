@@ -4,6 +4,7 @@ import { ChartBadges } from "@/components/radar/ChartBadges";
 import { RadarChartDisplay } from "@/components/radar/RadarChartDisplay";
 import { Concept } from "@/types/concept";
 import { useState } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface EdgesRadarChartProps {
   concepts: Concept[];
@@ -11,6 +12,7 @@ interface EdgesRadarChartProps {
 
 const EdgesRadarChart = ({ concepts }: EdgesRadarChartProps) => {
   const [highlighted, setHighlighted] = useState<string | null>(null);
+  const isMobile = useIsMobile();
   
   // Simplified, removed zoom and rotation states
   const { chartData, chartConfig } = useRadarChartData(concepts);
@@ -20,7 +22,7 @@ const EdgesRadarChart = ({ concepts }: EdgesRadarChartProps) => {
   };
 
   return (
-    <div className="flex flex-col gap-4 w-full h-full">
+    <div className={`flex flex-col ${isMobile ? 'gap-2' : 'gap-4'} w-full h-full`}>
       <ChartBadges 
         concepts={concepts}
         highlighted={highlighted}
