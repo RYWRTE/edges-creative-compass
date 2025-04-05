@@ -1,10 +1,10 @@
-
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { 
   LayoutDashboard, 
   BarChart, 
-  FileSpreadsheet 
+  FileSpreadsheet,
+  DollarSign 
 } from "lucide-react";
 import {
   NavigationMenu,
@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import AuthButton from "@/components/AuthButton";
 import { cn } from "@/lib/utils";
+import PricingModal from "@/components/PricingModal";
 
 const Header = () => {
   const location = useLocation();
@@ -87,6 +88,26 @@ const Header = () => {
                             View all your evaluations and comparisons
                           </p>
                         </Link>
+                      </NavigationMenuLink>
+                    </li>
+                    <li>
+                      <NavigationMenuLink asChild>
+                        <PricingModal trigger={
+                          <div
+                            className={cn(
+                              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-purple-100 focus:bg-purple-100",
+                              location.pathname === "/pricing" && "bg-purple-100"
+                            )}
+                          >
+                            <div className="flex items-center gap-2 text-sm font-medium leading-none text-purple-900">
+                              <DollarSign className="h-4 w-4" />
+                              <span>Pricing</span>
+                            </div>
+                            <p className="line-clamp-2 text-sm leading-snug text-gray-500">
+                              Explore our pricing plans
+                            </p>
+                          </div>
+                        } />
                       </NavigationMenuLink>
                     </li>
                   </ul>

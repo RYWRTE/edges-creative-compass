@@ -54,7 +54,7 @@ const pricingTiers: PricingTier[] = [
   },
   {
     name: "Professional",
-    price: "$29",
+    price: "$50", // Updated price
     description: "Perfect for individual marketers and small agencies",
     buttonText: "Subscribe Now",
     highlighted: true,
