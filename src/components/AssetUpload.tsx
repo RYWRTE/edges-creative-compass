@@ -88,13 +88,13 @@ const AssetUpload = ({ onConceptGenerated }: AssetUploadProps) => {
       setAssetName("");
       
       toast({
-        title: "AI Evaluation Complete",
-        description: `"${newConcept.name}" has been evaluated by AI.`,
+        title: "EDGES Evaluation Complete",
+        description: `"${newConcept.name}" has been evaluated by EDGES.`,
       });
     } catch (error) {
       toast({
         title: "Evaluation Failed",
-        description: "There was an error generating AI ratings.",
+        description: "There was an error generating EDGES ratings.",
         variant: "destructive",
       });
     } finally {
@@ -107,7 +107,7 @@ const AssetUpload = ({ onConceptGenerated }: AssetUploadProps) => {
       <CardHeader>
         <CardTitle>Upload Asset for EDGES Evaluation</CardTitle>
         <CardDescription>
-          Upload an image asset to generate EDGES ratings using EDGES
+          Upload an image or video asset to generate EDGES ratings
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -118,7 +118,7 @@ const AssetUpload = ({ onConceptGenerated }: AssetUploadProps) => {
           <Input
             id="asset-upload"
             type="file"
-            accept="image/*"
+            accept="image/*,video/*"
             onChange={handleFileChange}
             disabled={isLoading}
           />
