@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import EdgesRadarChart from "@/components/EdgesRadarChart";
 import AssetUpload from "@/components/AssetUpload";
 import { Concept, BrandCollection } from "@/types/concept";
 import { Button } from "@/components/ui/button";
 import { PlusIcon, Trash2Icon, SaveIcon, LogInIcon, PencilIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { saveConcept, fetchUserConcepts } from "@/services/conceptService";
@@ -331,18 +331,6 @@ const Index = () => {
         <div className={expandedView ? "w-full max-w-5xl mx-auto" : ""}>
           <Card className="h-full">
             <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle>
-                  {concepts.length === 0
-                    ? "EDGES Creative Evaluation"
-                    : concepts.length === 1
-                    ? `EDGES Creative Evaluation: ${concepts[0].name}`
-                    : "EDGES Creative Evaluation Comparison"}
-                </CardTitle>
-                <CardDescription>
-                  Visualization of your creative evaluation
-                </CardDescription>
-              </div>
               {concepts.length > 0 && (
                 <Button 
                   variant="ghost" 
