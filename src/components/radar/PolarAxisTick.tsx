@@ -1,6 +1,7 @@
 
 import { Concept } from "@/types/concept";
 import React from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface PolarAxisTickProps {
   x?: number;
@@ -14,35 +15,75 @@ interface PolarAxisTickProps {
 
 export const PolarAxisTick = (props: PolarAxisTickProps) => {
   const { x = 0, y = 0, payload, textAnchor, concepts, highlighted, chartData } = props;
+  const isMobile = useIsMobile();
   
   if (!payload) return null;
   
-  // Check if the axis is on the far sides
-  const isSideAxis = x && Math.abs(x - 300) > 200;
-  
-  // Calculate alignment based on position - helps with spacing text properly
+  // Calculate alignment based on position
   let alignment = textAnchor || "middle";
   let xOffset = 0;
   let yOffset = 0;
   
-  if (isSideAxis) {
-    // Give more space for side labels
-    xOffset = x < 300 ? -12 : 12;
-    alignment = x < 300 ? "end" : "start";
-  }
-
-  // Add additional Y offset for top and bottom labels
-  if (y < 100 || y > 500) {
-    yOffset = y < 100 ? -10 : 10;
+  // Determine positioning based on angle
+  const centerX = 175; // Approximate center X of chart
+  const centerY = 175; // Approximate center Y of chart
+  const angle = Math.atan2(y - centerY, x - centerX) * (180 / Math.PI);
+  
+  // Adjust positioning based on angle
+  if (angle > -45 && angle < 45) { // Right side
+    alignment = "start";
+    xOffset = isMobile ? 5 : 12;
+  } else if (angle > 45 && angle < 135) { // Bottom side
+    alignment = "middle";
+    yOffset = isMobile ? 8 : 15;
+  } else if ((angle > 135 && angle <= 180) || (angle >= -180 && angle < -135)) { // Left side
+    alignment = "end";
+    xOffset = isMobile ? -5 : -12;
+  } else { // Top side
+    alignment = "middle";
+    yOffset = isMobile ? -8 : -15;
   }
   
+  // On mobile, display just the main label and simple value
+  if (isMobile) {
+    return (
+      <g transform={`translate(${x + xOffset},${y + yOffset})`}>
+        <text
+          x={0}
+          y={0}
+          textAnchor={alignment}
+          fill="#1E293B"
+          fontSize={12}
+          fontWeight={600}
+        >
+          {payload.value}
+        </text>
+        
+        {/* Only show value for highlighted concept on mobile */}
+        {highlighted && concepts.length > 0 ? (
+          <text
+            x={0}
+            y={18}
+            textAnchor={alignment}
+            fill={concepts.find(c => c.name === highlighted)?.color || "#64748B"}
+            fontSize={11}
+            fontWeight={600}
+          >
+            {chartData.find(item => item.criterion === payload.value)?.[highlighted] || 0}
+          </text>
+        ) : null}
+      </g>
+    );
+  }
+  
+  // Desktop view with more details
   return (
     <g transform={`translate(${x + xOffset},${y + yOffset})`}>
       <text
         x={0}
         y={0}
         textAnchor={alignment}
-        fill="#1E293B" // Darker text for better contrast
+        fill="#1E293B"
         fontSize={14}
         fontWeight={600}
         className="uppercase"
@@ -80,7 +121,7 @@ export const PolarAxisTick = (props: PolarAxisTickProps) => {
               <text
                 key={index}
                 x={0}
-                y={highlighted ? 22 : (42 + (index * 20))} // More compact vertical spacing
+                y={highlighted ? 22 : (42 + (index * 20))}
                 textAnchor={alignment}
                 fill={concept.color || "#4B5563"}
                 fontSize={highlighted ? 13 : 12}

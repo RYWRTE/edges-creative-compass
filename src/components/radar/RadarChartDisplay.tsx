@@ -32,12 +32,12 @@ export const RadarChartDisplay = ({
   return (
     <div className="w-full">
       <ChartContainer config={chartConfig} className="w-full h-full">
-        <ResponsiveContainer width="100%" height={isMobile ? 400 : 600}>
+        <ResponsiveContainer width="100%" height={isMobile ? 350 : 600}>
           <RadarChart 
-            outerRadius={isMobile ? "55%" : "65%"}
+            outerRadius={isMobile ? "45%" : "65%"}
             data={chartData}
             margin={isMobile 
-              ? { top: 10, right: 10, bottom: 80, left: 10 }
+              ? { top: 5, right: 5, bottom: 60, left: 5 }
               : { top: 20, right: 30, bottom: 100, left: 30 }
             }
           >
@@ -51,10 +51,11 @@ export const RadarChartDisplay = ({
             <PolarRadiusAxis
               angle={90}
               domain={[0, 10]}
-              tickCount={isMobile ? 4 : 6}
-              tick={{ fontSize: isMobile ? 10 : 12, fill: "#64748B" }}
+              tickCount={isMobile ? 3 : 6}
+              tick={{ fontSize: isMobile ? 9 : 12, fill: "#64748B" }}
               axisLine={false}
               stroke="#CBD5E1"
+              tickFormatter={(value) => isMobile && value % 5 !== 0 ? '' : value}
             />
             <ChartTooltip content={<RadarTooltip />} />
 
@@ -74,8 +75,8 @@ export const RadarChartDisplay = ({
             ))}
 
             <Legend 
-              wrapperStyle={{ bottom: isMobile ? -60 : -80 }}
-              iconSize={isMobile ? 12 : 16}
+              wrapperStyle={{ bottom: isMobile ? -50 : -80 }}
+              iconSize={isMobile ? 10 : 16}
               iconType="circle"
               layout="horizontal"
               verticalAlign="bottom"
@@ -85,8 +86,8 @@ export const RadarChartDisplay = ({
                   <span style={{ 
                     color: highlighted === value ? 'black' : '#4B5563', 
                     fontWeight: highlighted === value ? 'bold' : 'normal',
-                    padding: '0 10px',
-                    fontSize: isMobile ? '12px' : '14px'
+                    padding: isMobile ? '0 5px' : '0 10px',
+                    fontSize: isMobile ? '10px' : '14px'
                   }}>
                     {value}
                   </span>
