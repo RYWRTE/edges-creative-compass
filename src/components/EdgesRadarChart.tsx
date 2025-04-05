@@ -21,7 +21,7 @@ const EdgesRadarChart = ({ concepts }: EdgesRadarChartProps) => {
   };
 
   return (
-    <div className={`flex flex-col ${isMobile ? 'gap-5' : 'gap-8'} w-full h-full`}>
+    <div className="w-full h-full">
       <RadarChartDisplay
         concepts={concepts}
         chartData={chartData}
