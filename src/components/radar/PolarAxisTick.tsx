@@ -16,25 +16,39 @@ export const PolarAxisTick = (props: PolarAxisTickProps) => {
   
   if (!payload) return null;
   
-  const isSideAxis = x && Math.abs(x - 250) > 200;
+  // Adjust the threshold for side axis detection
+  const isSideAxis = x && Math.abs(x - 250) > 180;
   
   // Calculate alignment based on position
   let alignment = textAnchor || "middle";
   let xOffset = 0;
+  let yOffset = 0;
   
   if (isSideAxis) {
-    xOffset = x < 250 ? -20 : 20;
+    // Increase offset for side labels
+    xOffset = x < 250 ? -28 : 28;
     alignment = x < 250 ? "end" : "start";
   }
   
+  // Add more vertical offset for top/bottom labels
+  if (y < 150) {
+    yOffset = -10; // Move top labels up
+  } else if (y > 350) {
+    yOffset = 10; // Move bottom labels down
+  }
+  
+  // Calculate the base spacing and multiplier for concept values
+  const baseSpacing = 28; // Increased from 24
+  const spacingMultiplier = 30; // Increased from 24
+  
   return (
-    <g transform={`translate(${x + xOffset},${y})`}>
+    <g transform={`translate(${x + xOffset},${y + yOffset})`}>
       <text
         x={0}
         y={0}
         textAnchor={alignment}
         fill="#1E293B"
-        fontSize={14}
+        fontSize={15} // Slightly larger
         fontWeight={700}
         className="uppercase"
       >
@@ -45,10 +59,10 @@ export const PolarAxisTick = (props: PolarAxisTickProps) => {
       {concepts.length > 0 && !highlighted ? (
         <text
           x={0}
-          y={24}
+          y={baseSpacing}
           textAnchor={alignment}
           fill="#64748B"
-          fontSize={12}
+          fontSize={13} // Slightly larger
         >
           Average: {(concepts.reduce((sum, concept) => {
             const criterionName = Object.keys(chartData[0]).find(key => 
@@ -60,7 +74,7 @@ export const PolarAxisTick = (props: PolarAxisTickProps) => {
         </text>
       ) : null}
       
-      {/* Individual concept values */}
+      {/* Individual concept values with increased spacing */}
       {concepts.length > 0 ? (
         <g>
           {concepts.map((concept, index) => {
@@ -71,10 +85,10 @@ export const PolarAxisTick = (props: PolarAxisTickProps) => {
               <text
                 key={index}
                 x={0}
-                y={highlighted ? 24 : (48 + (index * 24))}
+                y={highlighted ? baseSpacing : (baseSpacing + (index * spacingMultiplier))}
                 textAnchor={alignment}
                 fill={concept.color || "#4B5563"}
-                fontSize={highlighted ? 13 : 12}
+                fontSize={highlighted ? 14 : 13} // Increased font size
                 fontWeight={highlighted === concept.name ? 700 : 500}
               >
                 {concept.name}: {value}
