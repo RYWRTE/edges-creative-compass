@@ -5,7 +5,6 @@ import {
   PolarAngleAxis,
   PolarRadiusAxis,
   Radar,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
 import { Concept } from "@/types/concept";
@@ -13,32 +12,35 @@ import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import { RadarTooltip } from "./RadarTooltip";
 import { PolarAxisTick } from "./PolarAxisTick";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { ChartBadges } from "./ChartBadges";
 
 interface RadarChartDisplayProps {
   concepts: Concept[];
   chartData: any[];
   chartConfig: {[key: string]: {color?: string}};
   highlighted: string | null;
+  onToggleHighlight: (name: string) => void;
 }
 
 export const RadarChartDisplay = ({ 
   concepts, 
   chartData, 
   chartConfig, 
-  highlighted 
+  highlighted,
+  onToggleHighlight
 }: RadarChartDisplayProps) => {
   const isMobile = useIsMobile();
 
   return (
-    <div className="w-full">
+    <div className="w-full flex flex-col">
       <ChartContainer config={chartConfig} className="w-full h-full">
         <ResponsiveContainer width="100%" height={isMobile ? 350 : 600}>
           <RadarChart 
             outerRadius={isMobile ? "45%" : "65%"}
             data={chartData}
             margin={isMobile 
-              ? { top: 5, right: 5, bottom: 60, left: 5 }
-              : { top: 20, right: 30, bottom: 100, left: 30 }
+              ? { top: 5, right: 5, bottom: 10, left: 5 }
+              : { top: 20, right: 30, bottom: 20, left: 30 }
             }
           >
             <PolarGrid strokeDasharray="3 3" stroke="#CBD5E1" />
@@ -73,30 +75,18 @@ export const RadarChartDisplay = ({
                 style={{ display: highlighted && highlighted !== concept.name ? 'none' : 'block' }}
               />
             ))}
-
-            <Legend 
-              wrapperStyle={{ bottom: isMobile ? -50 : -80 }}
-              iconSize={isMobile ? 10 : 16}
-              iconType="circle"
-              layout="horizontal"
-              verticalAlign="bottom"
-              align="center"
-              formatter={(value) => {
-                return (
-                  <span style={{ 
-                    color: highlighted === value ? 'black' : '#4B5563', 
-                    fontWeight: highlighted === value ? 'bold' : 'normal',
-                    padding: isMobile ? '0 5px' : '0 10px',
-                    fontSize: isMobile ? '10px' : '14px'
-                  }}>
-                    {value}
-                  </span>
-                );
-              }}
-            />
           </RadarChart>
         </ResponsiveContainer>
       </ChartContainer>
+      
+      {/* Badges moved outside the chart to replace the Legend */}
+      <div className={`mt-${isMobile ? '2' : '4'}`}>
+        <ChartBadges
+          concepts={concepts}
+          highlighted={highlighted}
+          onToggle={onToggleHighlight}
+        />
+      </div>
     </div>
   );
 };

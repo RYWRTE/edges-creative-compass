@@ -23,17 +23,13 @@ const EdgesRadarChart = ({ concepts }: EdgesRadarChartProps) => {
 
   return (
     <div className={`flex flex-col ${isMobile ? 'gap-2' : 'gap-4'} w-full h-full`}>
-      <ChartBadges 
-        concepts={concepts}
-        highlighted={highlighted}
-        onToggle={handleConceptToggle}
-      />
-      
+      {/* Remove ChartBadges from here as we've moved it inside RadarChartDisplay */}
       <RadarChartDisplay
         concepts={concepts}
         chartData={chartData}
         chartConfig={chartConfig}
         highlighted={highlighted}
+        onToggleHighlight={handleConceptToggle}
       />
     </div>
   );
