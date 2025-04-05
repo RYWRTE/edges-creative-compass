@@ -18,27 +18,33 @@ export const PolarAxisTick = (props: PolarAxisTickProps) => {
   if (!payload) return null;
   
   // Check if the axis is on the far sides
-  const isSideAxis = x && Math.abs(x - 250) > 200;
+  const isSideAxis = x && Math.abs(x - 300) > 200;
   
   // Calculate alignment based on position - helps with spacing text properly
   let alignment = textAnchor || "middle";
   let xOffset = 0;
+  let yOffset = 0;
   
   if (isSideAxis) {
     // Give more space for side labels
-    xOffset = x < 250 ? -25 : 25;
-    alignment = x < 250 ? "end" : "start";
+    xOffset = x < 300 ? -12 : 12;
+    alignment = x < 300 ? "end" : "start";
+  }
+
+  // Add additional Y offset for top and bottom labels
+  if (y < 100 || y > 500) {
+    yOffset = y < 100 ? -10 : 10;
   }
   
   return (
-    <g transform={`translate(${x + xOffset},${y})`}>
+    <g transform={`translate(${x + xOffset},${y + yOffset})`}>
       <text
         x={0}
         y={0}
         textAnchor={alignment}
         fill="#1E293B" // Darker text for better contrast
-        fontSize={15}
-        fontWeight={700}
+        fontSize={14}
+        fontWeight={600}
         className="uppercase"
       >
         {payload.value}
@@ -48,10 +54,10 @@ export const PolarAxisTick = (props: PolarAxisTickProps) => {
       {concepts.length > 0 && !highlighted ? (
         <text
           x={0}
-          y={28}
+          y={22}
           textAnchor={alignment}
           fill="#64748B"
-          fontSize={13}
+          fontSize={12}
         >
           Average: {(concepts.reduce((sum, concept) => {
             const criterionName = Object.keys(chartData[0]).find(key => 
@@ -74,10 +80,10 @@ export const PolarAxisTick = (props: PolarAxisTickProps) => {
               <text
                 key={index}
                 x={0}
-                y={highlighted ? 28 : (56 + (index * 28))} // Increased vertical spacing
+                y={highlighted ? 22 : (42 + (index * 20))} // More compact vertical spacing
                 textAnchor={alignment}
                 fill={concept.color || "#4B5563"}
-                fontSize={highlighted ? 14 : 13}
+                fontSize={highlighted ? 13 : 12}
                 fontWeight={highlighted === concept.name ? 700 : 500}
               >
                 {concept.name}: {value}

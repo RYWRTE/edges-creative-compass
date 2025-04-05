@@ -28,14 +28,14 @@ export const RadarChartDisplay = ({
 }: RadarChartDisplayProps) => {
   return (
     <div className="w-full">
-      <ChartContainer config={chartConfig} className="w-full h-full pt-10 pb-20">
-        <ResponsiveContainer width="100%" height={750}>
+      <ChartContainer config={chartConfig} className="w-full h-full">
+        <ResponsiveContainer width="100%" height={600}>
           <RadarChart 
-            outerRadius="55%"
+            outerRadius="65%"
             data={chartData}
-            margin={{ top: 140, right: 140, bottom: 140, left: 140 }}
+            margin={{ top: 20, right: 30, bottom: 100, left: 30 }}
           >
-            <PolarGrid strokeDasharray="4 4" stroke="#CBD5E1" />
+            <PolarGrid strokeDasharray="3 3" stroke="#CBD5E1" />
             <PolarAngleAxis
               dataKey="criterion"
               tick={<PolarAxisTick concepts={concepts} highlighted={highlighted} chartData={chartData} />}
@@ -68,8 +68,8 @@ export const RadarChartDisplay = ({
             ))}
 
             <Legend 
-              wrapperStyle={{ bottom: -90, paddingTop: "110px" }}
-              iconSize={20}
+              wrapperStyle={{ bottom: -80 }}
+              iconSize={16}
               iconType="circle"
               layout="horizontal"
               verticalAlign="bottom"
@@ -79,8 +79,8 @@ export const RadarChartDisplay = ({
                   <span style={{ 
                     color: highlighted === value ? 'black' : '#4B5563', 
                     fontWeight: highlighted === value ? 'bold' : 'normal',
-                    padding: '0 20px',
-                    fontSize: '16px'
+                    padding: '0 10px',
+                    fontSize: '14px'
                   }}>
                     {value}
                   </span>

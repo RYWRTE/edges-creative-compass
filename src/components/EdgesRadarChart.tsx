@@ -20,7 +20,7 @@ const EdgesRadarChart = ({ concepts }: EdgesRadarChartProps) => {
   };
 
   return (
-    <div className="flex flex-col gap-8 w-full h-full">
+    <div className="flex flex-col gap-4 w-full h-full">
       <ChartBadges 
         concepts={concepts}
         highlighted={highlighted}
