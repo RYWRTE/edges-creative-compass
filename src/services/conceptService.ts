@@ -37,7 +37,22 @@ export const fetchUserConcepts = async () => {
 
     if (error) throw error;
 
-    return data.map((evaluation) => ({
+    // Explicitly type the evaluation object to include brand_name
+    return data.map((evaluation: {
+      concept_name: string;
+      entertaining: number;
+      daring: number;
+      gripping: number;
+      experiential: number;
+      subversive: number;
+      color: string | null;
+      source: string | null;
+      asset_url: string | null;
+      kpis_objectives: string | null;
+      additional_context: string | null;
+      brand_name: string | null;
+      // Include other properties as needed
+    }) => ({
       name: evaluation.concept_name,
       entertaining: evaluation.entertaining,
       daring: evaluation.daring,
