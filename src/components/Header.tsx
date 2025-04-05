@@ -43,10 +43,29 @@ const Header = () => {
                         >
                           <BarChart className="h-6 w-6 text-purple-700" />
                           <div className="mb-2 mt-4 text-lg font-medium text-purple-900">
-                            EDGES Evaluator
+                            EDGES Platform
                           </div>
                           <p className="text-sm leading-tight text-purple-800">
                             Evaluate marketing concepts using five creative criteria
+                          </p>
+                        </Link>
+                      </NavigationMenuLink>
+                    </li>
+                    <li>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          to="/tool"
+                          className={cn(
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-purple-100 focus:bg-purple-100",
+                            location.pathname === "/tool" && "bg-purple-100"
+                          )}
+                        >
+                          <div className="flex items-center gap-2 text-sm font-medium leading-none text-purple-900">
+                            <FileSpreadsheet className="h-4 w-4" />
+                            <span>Evaluation Tool</span>
+                          </div>
+                          <p className="line-clamp-2 text-sm leading-snug text-gray-500">
+                            Create new concept evaluations
                           </p>
                         </Link>
                       </NavigationMenuLink>
@@ -70,25 +89,6 @@ const Header = () => {
                         </Link>
                       </NavigationMenuLink>
                     </li>
-                    <li>
-                      <NavigationMenuLink asChild>
-                        <Link
-                          to="/"
-                          className={cn(
-                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-purple-100 focus:bg-purple-100",
-                            location.pathname === "/" && "bg-purple-100"
-                          )}
-                        >
-                          <div className="flex items-center gap-2 text-sm font-medium leading-none text-purple-900">
-                            <FileSpreadsheet className="h-4 w-4" />
-                            <span>Evaluate</span>
-                          </div>
-                          <p className="line-clamp-2 text-sm leading-snug text-gray-500">
-                            Create new concept evaluations
-                          </p>
-                        </Link>
-                      </NavigationMenuLink>
-                    </li>
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
@@ -97,6 +97,17 @@ const Header = () => {
         </div>
 
         <div className="flex items-center gap-4">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            asChild
+            className={location.pathname === "/tool" ? "hidden" : ""}
+          >
+            <Link to="/tool">
+              <BarChart className="h-4 w-4 mr-2" />
+              Try the Tool
+            </Link>
+          </Button>
           <Button 
             variant="outline" 
             size="sm" 
