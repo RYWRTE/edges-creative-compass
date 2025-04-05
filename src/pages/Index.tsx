@@ -11,7 +11,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { saveConcept, fetchUserConcepts } from "@/services/conceptService";
 import AuthButton from "@/components/AuthButton";
-import { v4 as uuidv4 } from '@supabase/supabase-js/dist/module/lib/helpers';
+import { v4 as uuidv4 } from 'uuid';
 
 const Index = () => {
   const [concepts, setConcepts] = useState<Concept[]>([]);

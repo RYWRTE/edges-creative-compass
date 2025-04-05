@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { Concept } from "@/types/concept";
 
@@ -44,11 +45,11 @@ export const fetchUserConcepts = async () => {
       experiential: evaluation.experiential,
       subversive: evaluation.subversive,
       color: evaluation.color,
-      source: evaluation.source,
+      source: evaluation.source as 'manual' | 'ai-generated',
       assetUrl: evaluation.asset_url,
       kpisObjectives: evaluation.kpis_objectives,
       additionalContext: evaluation.additional_context,
-      brandName: evaluation.brand_name
+      brandName: evaluation.brandName
     }));
   } catch (error) {
     console.error('Error fetching concepts:', error);
