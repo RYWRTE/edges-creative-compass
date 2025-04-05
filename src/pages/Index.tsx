@@ -1,20 +1,16 @@
 
 import { useState } from "react";
-import ConceptForm from "@/components/ConceptForm";
 import EdgesRadarChart from "@/components/EdgesRadarChart";
 import AssetUpload from "@/components/AssetUpload";
-import InfoCard from "@/components/InfoCard";
 import { Concept } from "@/types/concept";
 import { Button } from "@/components/ui/button";
-import { PlusIcon, Trash2Icon, UploadIcon } from "lucide-react";
+import { PlusIcon, Trash2Icon } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Index = () => {
   const [concepts, setConcepts] = useState<Concept[]>([]);
   const [showForm, setShowForm] = useState(true);
-  const [activeTab, setActiveTab] = useState<string>("manual");
   const { toast } = useToast();
 
   const addConcept = (concept: Concept) => {
@@ -34,7 +30,7 @@ const Index = () => {
     
     // Set source if not already specified
     if (!concept.source) {
-      concept.source = 'manual';
+      concept.source = 'ai-generated';
     }
     
     setConcepts([...concepts, concept]);
@@ -73,43 +69,16 @@ const Index = () => {
         <div className="grid md:grid-cols-2 gap-8">
           <div>
             {showForm ? (
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="grid grid-cols-2 mb-4">
-                  <TabsTrigger value="manual">Manual Input</TabsTrigger>
-                  <TabsTrigger value="upload">Upload Asset</TabsTrigger>
-                </TabsList>
-                <TabsContent value="manual">
-                  <ConceptForm onSubmit={addConcept} />
-                </TabsContent>
-                <TabsContent value="upload">
-                  <AssetUpload onConceptGenerated={addConcept} />
-                </TabsContent>
-              </Tabs>
+              <AssetUpload onConceptGenerated={addConcept} />
             ) : (
               <div className="flex flex-col gap-4">
-                <div className="flex gap-2">
-                  <Button 
-                    onClick={() => {
-                      setShowForm(true);
-                      setActiveTab("manual");
-                    }} 
-                    className="flex items-center gap-2"
-                  >
-                    <PlusIcon size={16} />
-                    Add Manual Concept
-                  </Button>
-                  <Button 
-                    onClick={() => {
-                      setShowForm(true);
-                      setActiveTab("upload");
-                    }} 
-                    variant="outline" 
-                    className="flex items-center gap-2"
-                  >
-                    <UploadIcon size={16} />
-                    Upload Asset
-                  </Button>
-                </div>
+                <Button 
+                  onClick={() => setShowForm(true)} 
+                  className="w-full"
+                >
+                  <PlusIcon size={16} className="mr-2" />
+                  Upload New Asset
+                </Button>
                 
                 <Card>
                   <CardHeader>
@@ -127,9 +96,7 @@ const Index = () => {
                               <div className="w-4 h-4 rounded-full" style={{ backgroundColor: concept.color }}></div>
                               <div>
                                 <span className="font-medium">{concept.name}</span>
-                                {concept.source === 'ai-generated' && (
-                                  <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">AI Rated</span>
-                                )}
+                                <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">AI Rated</span>
                               </div>
                             </div>
                             <Button
@@ -148,8 +115,6 @@ const Index = () => {
                     )}
                   </CardContent>
                 </Card>
-                
-                <InfoCard />
               </div>
             )}
           </div>
@@ -175,22 +140,11 @@ const Index = () => {
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center h-64 text-center">
-                    <p className="text-gray-500 mb-4">Add a concept to see the radar chart visualization</p>
+                    <p className="text-gray-500 mb-4">Upload an asset to see the radar chart visualization</p>
                     {!showForm && (
-                      <div className="flex gap-2">
-                        <Button onClick={() => {
-                          setShowForm(true);
-                          setActiveTab("manual");
-                        }} variant="outline">
-                          Add Manual Concept
-                        </Button>
-                        <Button onClick={() => {
-                          setShowForm(true);
-                          setActiveTab("upload");
-                        }} variant="outline">
-                          Upload Asset
-                        </Button>
-                      </div>
+                      <Button onClick={() => setShowForm(true)} variant="outline">
+                        Upload Asset
+                      </Button>
                     )}
                   </div>
                 )}

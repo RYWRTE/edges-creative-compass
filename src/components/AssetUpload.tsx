@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Concept } from "@/types/concept";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 interface AssetUploadProps {
   onConceptGenerated: (concept: Concept) => void;
@@ -17,6 +18,29 @@ const AssetUpload = ({ onConceptGenerated }: AssetUploadProps) => {
   const [assetName, setAssetName] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { toast } = useToast();
+
+  const criteria = [
+    {
+      name: "ENTERTAINING",
+      description: "Does the idea draw the audience in with compelling, dramatic narratives?",
+    },
+    {
+      name: "DARING",
+      description: "Is this idea challenging expectations or hijacking a medium/moment?",
+    },
+    {
+      name: "GRIPPING",
+      description: "Is this work able to stop and grab attention to engage the brand/promotion?",
+    },
+    {
+      name: "EXPERIENTIAL",
+      description: "Is this idea actively involving and interacting with consumers?",
+    },
+    {
+      name: "SUBVERSIVE",
+      description: "Is this work challenging category rules & conventions with a new path forward?",
+    },
+  ];
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -141,6 +165,24 @@ const AssetUpload = ({ onConceptGenerated }: AssetUploadProps) => {
             "Generate AI Evaluation"
           )}
         </Button>
+
+        <Separator className="my-4" />
+
+        <div className="space-y-4">
+          <h3 className="font-medium text-sm">EDGES Evaluation Criteria</h3>
+          <div className="space-y-4">
+            {criteria.map((criterion, index) => (
+              <div key={index} className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold text-sm">
+                    {criterion.name}
+                  </span>
+                </div>
+                <p className="text-xs text-gray-600">{criterion.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
