@@ -204,7 +204,7 @@ const EdgesRadarChart = ({ concepts }: EdgesRadarChartProps) => {
     );
   };
 
-  const chartData = transformDataForRadarChart();
+  // Removed the duplicate chartData declaration that was here
 
   const createChartConfig = () => {
     const config: {[key: string]: {color?: string}} = {};
@@ -295,11 +295,11 @@ const EdgesRadarChart = ({ concepts }: EdgesRadarChartProps) => {
         style={{ transform: `scale(${zoomLevel}) rotate(${rotation}deg)` }}
       >
         <ChartContainer config={createChartConfig()} className="w-full h-full pt-12 pb-20">
-          <ResponsiveContainer width="100%" height={600}>
+          <ResponsiveContainer width="100%" height={700}>
             <RadarChart 
-              outerRadius="65%"
+              outerRadius="60%"
               data={chartData}
-              margin={{ top: 80, right: 80, bottom: 80, left: 80 }}
+              margin={{ top: 100, right: 100, bottom: 100, left: 100 }}
             >
               <PolarGrid strokeDasharray="4 4" stroke="#CBD5E1" />
               <PolarAngleAxis
@@ -334,8 +334,8 @@ const EdgesRadarChart = ({ concepts }: EdgesRadarChartProps) => {
               ))}
 
               <Legend 
-                wrapperStyle={{ bottom: -60, paddingTop: "60px" }}
-                iconSize={16}
+                wrapperStyle={{ bottom: -70, paddingTop: "80px" }}
+                iconSize={18}
                 iconType="circle"
                 layout="horizontal"
                 verticalAlign="bottom"
@@ -345,7 +345,7 @@ const EdgesRadarChart = ({ concepts }: EdgesRadarChartProps) => {
                     <span style={{ 
                       color: highlighted === value ? 'black' : '#4B5563', 
                       fontWeight: highlighted === value ? 'bold' : 'normal',
-                      padding: '0 12px',
+                      padding: '0 16px',
                       fontSize: '16px'
                     }}>
                       {value}
