@@ -17,7 +17,7 @@ export const saveConcept = async (concept: Concept) => {
       asset_url: concept.assetUrl,
       kpis_objectives: concept.kpisObjectives,
       additional_context: concept.additionalContext,
-      brandName: concept.brandName
+      brand_name: concept.brandName
     });
 
     if (error) throw error;
@@ -49,7 +49,7 @@ export const fetchUserConcepts = async () => {
       assetUrl: evaluation.asset_url,
       kpisObjectives: evaluation.kpis_objectives,
       additionalContext: evaluation.additional_context,
-      brandName: evaluation.brandName
+      brandName: evaluation.brand_name
     }));
   } catch (error) {
     console.error('Error fetching concepts:', error);
