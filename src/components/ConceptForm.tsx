@@ -81,7 +81,7 @@ const ConceptForm = ({ onSubmit }: ConceptFormProps) => {
             min={1}
             max={10}
             step={1}
-            value={[concept[key as keyof Omit<Concept, "name" | "color">]]}
+            value={[concept[key as keyof Omit<Concept, "name" | "color">] as number]}
             onValueChange={(value) => 
               handleSliderChange(key as keyof Omit<Concept, "name" | "color">, value)
             }
