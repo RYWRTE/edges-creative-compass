@@ -4,6 +4,7 @@ import { ArrowRight, BookOpen, CheckCircle, BarChart, Target } from "lucide-reac
 import { Link } from "react-router-dom";
 import InfoCard from "@/components/InfoCard";
 import { Card, CardContent } from "@/components/ui/card";
+import PricingModal from "@/components/PricingModal";
 
 const Landing = () => {
   return (
@@ -25,11 +26,11 @@ const Landing = () => {
                     Start Free Trial <ArrowRight className="ml-2" />
                   </Link>
                 </Button>
-                <Button asChild variant="outline" size="lg" className="rounded-full">
-                  <Link to="/">
-                    Explore the Tool <BarChart className="ml-2" />
-                  </Link>
-                </Button>
+                <PricingModal trigger={
+                  <Button variant="outline" size="lg" className="rounded-full">
+                    View Pricing <ArrowRight className="ml-2" />
+                  </Button>
+                } />
               </div>
             </div>
             <div className="lg:w-1/2 flex justify-center mt-8 lg:mt-0">
@@ -216,11 +217,11 @@ const Landing = () => {
                     Book a Demo <BookOpen className="ml-2" />
                   </a>
                 </Button>
-                <Button asChild variant="outline" size="lg" className="rounded-full">
-                  <Link to="/">
-                    Explore the Framework <BarChart className="ml-2" />
-                  </Link>
-                </Button>
+                <PricingModal trigger={
+                  <Button variant="outline" size="lg" className="rounded-full">
+                    View Pricing Plans <BarChart className="ml-2" />
+                  </Button>
+                } />
               </div>
             </div>
           </div>
