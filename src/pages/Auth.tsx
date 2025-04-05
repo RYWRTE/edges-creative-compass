@@ -1,6 +1,6 @@
 
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,20 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [isSignIn, setIsSignIn] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
+  
+  // Get the return URL from location state or default to "/"
+  const from = location.state?.from?.pathname || "/";
+  
+  // Check if user is already logged in
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        navigate(from, { replace: true });
+      }
+    });
+  }, [navigate, from]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +47,7 @@ const Auth = () => {
           description: "You've successfully signed in",
         });
         
-        navigate("/");
+        navigate(from, { replace: true });
       } else {
         // Sign up
         const { error } = await supabase.auth.signUp({
