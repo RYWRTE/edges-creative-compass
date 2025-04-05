@@ -36,66 +36,69 @@ export const RadarChartDisplay = ({
   const criteriaNames = chartData.map(item => item.criterion);
 
   return (
-    <div className="w-full flex flex-col gap-8">
-      {/* Chart Container */}
-      <div className="w-full">
-        <ChartContainer config={chartConfig} className="w-full h-full">
-          <ResponsiveContainer width="100%" height={isMobile ? 585 : 910}>
-            <RadarChart 
-              outerRadius={isMobile ? "65%" : "80%"}
-              data={chartData}
-              margin={isMobile 
-                ? { top: 60, right: 60, bottom: 60, left: 60 }
-                : { top: 100, right: 100, bottom: 100, left: 100 }
-              }
-            >
-              <PolarGrid strokeDasharray="3 3" stroke="#CBD5E1" />
-              <PolarAngleAxis
-                dataKey="criterion"
-                tick={<PolarAxisTick concepts={concepts} highlighted={highlighted} chartData={chartData} />}
-                axisLine={{ stroke: "#E2E8F0", strokeWidth: 1 }}
-                tickLine={false}
-              />
-              <PolarRadiusAxis
-                angle={90}
-                domain={[0, 10]}
-                tickCount={isMobile ? 3 : 6}
-                tick={{ fontSize: isMobile ? 9 : 12, fill: "#64748B" }}
-                axisLine={false}
-                stroke="#CBD5E1"
-                tickFormatter={(value) => isMobile && value % 5 !== 0 ? '' : value}
-              />
-              <ChartTooltip content={<RadarTooltip />} />
-
-              {concepts.map((concept, index) => (
-                <Radar
-                  key={index}
-                  name={concept.name}
-                  dataKey={concept.name}
-                  stroke={concept.color}
-                  fill={concept.color}
-                  fillOpacity={highlighted === concept.name ? 0.5 : 0.2}
-                  strokeWidth={highlighted === concept.name ? 3 : 2}
-                  isAnimationActive={true}
-                  animationDuration={500}
-                  style={{ display: highlighted && highlighted !== concept.name ? 'none' : 'block' }}
+    <div className="w-full grid grid-cols-1 gap-12">
+      {/* Radar Chart Container - Now in its own dedicated section */}
+      <div className="w-full bg-white rounded-lg p-6 shadow-sm">
+        <h3 className="text-xl font-semibold mb-4">Performance Radar</h3>
+        <div className="w-full mx-auto" style={{ height: isMobile ? "600px" : "800px" }}>
+          <ChartContainer config={chartConfig} className="w-full h-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <RadarChart 
+                outerRadius={isMobile ? "70%" : "85%"}
+                data={chartData}
+                margin={isMobile 
+                  ? { top: 60, right: 60, bottom: 60, left: 60 }
+                  : { top: 120, right: 120, bottom: 120, left: 120 }
+                }
+              >
+                <PolarGrid strokeDasharray="3 3" stroke="#CBD5E1" />
+                <PolarAngleAxis
+                  dataKey="criterion"
+                  tick={<PolarAxisTick concepts={concepts} highlighted={highlighted} chartData={chartData} />}
+                  axisLine={{ stroke: "#E2E8F0", strokeWidth: 1 }}
+                  tickLine={false}
                 />
-              ))}
-            </RadarChart>
-          </ResponsiveContainer>
-        </ChartContainer>
+                <PolarRadiusAxis
+                  angle={90}
+                  domain={[0, 10]}
+                  tickCount={isMobile ? 3 : 6}
+                  tick={{ fontSize: isMobile ? 9 : 12, fill: "#64748B" }}
+                  axisLine={false}
+                  stroke="#CBD5E1"
+                  tickFormatter={(value) => isMobile && value % 5 !== 0 ? '' : value}
+                />
+                <ChartTooltip content={<RadarTooltip />} />
+
+                {concepts.map((concept, index) => (
+                  <Radar
+                    key={index}
+                    name={concept.name}
+                    dataKey={concept.name}
+                    stroke={concept.color}
+                    fill={concept.color}
+                    fillOpacity={highlighted === concept.name ? 0.5 : 0.2}
+                    strokeWidth={highlighted === concept.name ? 3 : 2}
+                    isAnimationActive={true}
+                    animationDuration={500}
+                    style={{ display: highlighted && highlighted !== concept.name ? 'none' : 'block' }}
+                  />
+                ))}
+              </RadarChart>
+            </ResponsiveContainer>
+          </ChartContainer>
+        </div>
+        
+        <div className="mt-6">
+          <ChartBadges
+            concepts={concepts}
+            highlighted={highlighted}
+            onToggle={onToggleHighlight}
+          />
+        </div>
       </div>
       
-      <div className={`mt-${isMobile ? '4' : '6'}`}>
-        <ChartBadges
-          concepts={concepts}
-          highlighted={highlighted}
-          onToggle={onToggleHighlight}
-        />
-      </div>
-      
-      {/* Table Container */}
-      <div className="w-full mt-8">
+      {/* Table Container - Now in its own dedicated section */}
+      <div className="w-full bg-white rounded-lg p-6 shadow-sm">
         <h3 className="text-lg font-semibold mb-4">Asset Ratings</h3>
         <div className="overflow-x-auto">
           <Table>
