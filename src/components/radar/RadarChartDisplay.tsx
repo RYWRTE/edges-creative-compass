@@ -1,3 +1,4 @@
+
 import {
   RadarChart,
   PolarGrid,
@@ -35,18 +36,18 @@ export const RadarChartDisplay = ({
   const criteriaNames = chartData.map(item => item.criterion);
 
   return (
-    <div className="w-full grid grid-cols-1 gap-12">
-      {/* Radar Chart Container - Now in its own dedicated section */}
-      <div className="w-full bg-white rounded-lg p-6 shadow-sm">
-        <div className="w-full mx-auto" style={{ height: isMobile ? "600px" : "800px" }}>
+    <div className="w-full grid grid-cols-1 gap-8">
+      {/* Radar Chart Container - Compact layout */}
+      <div className="w-full bg-white rounded-lg p-4 shadow-sm">
+        <div className="w-full mx-auto" style={{ height: isMobile ? "500px" : "700px" }}>
           <ChartContainer config={chartConfig} className="w-full h-full">
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart 
                 outerRadius={isMobile ? "70%" : "85%"}
                 data={chartData}
                 margin={isMobile 
-                  ? { top: 60, right: 60, bottom: 60, left: 60 }
-                  : { top: 120, right: 120, bottom: 120, left: 120 }
+                  ? { top: 40, right: 40, bottom: 40, left: 40 }
+                  : { top: 80, right: 80, bottom: 80, left: 80 }
                 }
               >
                 <PolarGrid strokeDasharray="3 3" stroke="#CBD5E1" />
@@ -86,7 +87,7 @@ export const RadarChartDisplay = ({
           </ChartContainer>
         </div>
         
-        <div className="mt-6">
+        <div className="mt-4">
           <ChartBadges
             concepts={concepts}
             highlighted={highlighted}
@@ -95,8 +96,8 @@ export const RadarChartDisplay = ({
         </div>
       </div>
       
-      {/* Table Container - Now in its own dedicated section */}
-      <div className="w-full bg-white rounded-lg p-6 shadow-sm">
+      {/* Table Container - Compact layout */}
+      <div className="w-full bg-white rounded-lg p-4 shadow-sm">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
