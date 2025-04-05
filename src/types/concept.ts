@@ -9,4 +9,6 @@ export interface Concept {
   color?: string;
   source?: 'manual' | 'ai-generated';
   assetUrl?: string;
+  kpisObjectives?: string;
+  additionalContext?: string;
 }

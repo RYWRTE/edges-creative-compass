@@ -7,6 +7,8 @@ import { Concept } from "@/types/concept";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 interface AssetUploadProps {
   onConceptGenerated: (concept: Concept) => void;
@@ -16,6 +18,8 @@ const AssetUpload = ({ onConceptGenerated }: AssetUploadProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [assetUrl, setAssetUrl] = useState<string>("");
   const [assetName, setAssetName] = useState<string>("");
+  const [kpisObjectives, setKpisObjectives] = useState<string>("");
+  const [additionalContext, setAdditionalContext] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { toast } = useToast();
 
@@ -58,6 +62,14 @@ const AssetUpload = ({ onConceptGenerated }: AssetUploadProps) => {
     setAssetName(e.target.value);
   };
 
+  const handleKpisObjectivesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setKpisObjectives(e.target.value);
+  };
+
+  const handleAdditionalContextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setAdditionalContext(e.target.value);
+  };
+
   const generateAIRatings = async () => {
     setIsLoading(true);
     
@@ -77,7 +89,9 @@ const AssetUpload = ({ onConceptGenerated }: AssetUploadProps) => {
         experiential: Math.floor(Math.random() * 7) + 3,
         subversive: Math.floor(Math.random() * 7) + 3,
         source: 'ai-generated',
-        assetUrl: assetUrl
+        assetUrl: assetUrl,
+        kpisObjectives: kpisObjectives || undefined,
+        additionalContext: additionalContext || undefined
       };
       
       onConceptGenerated(newConcept);
@@ -86,6 +100,8 @@ const AssetUpload = ({ onConceptGenerated }: AssetUploadProps) => {
       setFile(null);
       setAssetUrl("");
       setAssetName("");
+      setKpisObjectives("");
+      setAdditionalContext("");
       
       toast({
         title: "EDGES Evaluation Complete",
@@ -148,6 +164,34 @@ const AssetUpload = ({ onConceptGenerated }: AssetUploadProps) => {
             onChange={handleAssetNameChange}
             placeholder="Enter a name for this asset"
             disabled={isLoading}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="kpis-objectives" className="text-sm font-medium">
+            KPIs / Objectives (optional)
+          </Label>
+          <Textarea
+            id="kpis-objectives"
+            value={kpisObjectives}
+            onChange={handleKpisObjectivesChange}
+            placeholder="Enter KPIs or objectives for this asset"
+            disabled={isLoading}
+            className="min-h-24"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="additional-context" className="text-sm font-medium">
+            Additional Context (optional)
+          </Label>
+          <Textarea
+            id="additional-context"
+            value={additionalContext}
+            onChange={handleAdditionalContextChange}
+            placeholder="Enter any additional context that should be considered when evaluating"
+            disabled={isLoading}
+            className="min-h-24"
           />
         </div>
         
