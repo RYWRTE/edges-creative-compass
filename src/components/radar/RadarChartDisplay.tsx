@@ -1,4 +1,3 @@
-
 import {
   RadarChart,
   PolarGrid,
@@ -39,7 +38,6 @@ export const RadarChartDisplay = ({
     <div className="w-full grid grid-cols-1 gap-12">
       {/* Radar Chart Container - Now in its own dedicated section */}
       <div className="w-full bg-white rounded-lg p-6 shadow-sm">
-        <h3 className="text-xl font-semibold mb-4">Performance Radar</h3>
         <div className="w-full mx-auto" style={{ height: isMobile ? "600px" : "800px" }}>
           <ChartContainer config={chartConfig} className="w-full h-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -99,7 +97,6 @@ export const RadarChartDisplay = ({
       
       {/* Table Container - Now in its own dedicated section */}
       <div className="w-full bg-white rounded-lg p-6 shadow-sm">
-        <h3 className="text-lg font-semibold mb-4">Asset Ratings</h3>
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
