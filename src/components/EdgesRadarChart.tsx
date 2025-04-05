@@ -1,3 +1,4 @@
+
 import {
   RadarChart,
   PolarGrid,
@@ -108,11 +109,13 @@ const EdgesRadarChart = ({ concepts }: EdgesRadarChartProps) => {
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white p-2 border rounded shadow-sm">
-          <p className="font-bold">{payload[0].payload.criterion}</p>
+        <div className="bg-white p-4 border rounded shadow-md">
+          <p className="font-bold text-base mb-2">{payload[0].payload.criterion}</p>
           {payload.map((entry: any, index: number) => (
-            <p key={index} style={{ color: entry.color }}>
-              {entry.name}: {entry.value}
+            <p key={index} className="flex items-center gap-2 mb-1" style={{ color: entry.color }}>
+              <span className="w-3 h-3 rounded-full inline-block" style={{ backgroundColor: entry.color }}></span>
+              <span className="font-medium">{entry.name}:</span> 
+              <span className="font-bold">{entry.value}</span>
             </p>
           ))}
         </div>
@@ -122,7 +125,7 @@ const EdgesRadarChart = ({ concepts }: EdgesRadarChartProps) => {
   };
 
   const renderPolarAngleAxisTick = (props: any) => {
-    const { x, y, payload, textAnchor, fontSize } = props;
+    const { x, y, payload, textAnchor } = props;
     
     return (
       <g transform={`translate(${x},${y})`}>
@@ -131,11 +134,30 @@ const EdgesRadarChart = ({ concepts }: EdgesRadarChartProps) => {
           y={0}
           textAnchor={textAnchor}
           fill="#4B5563"
-          fontSize={fontSize}
-          fontWeight={500}
+          fontSize={12}
+          fontWeight={600}
+          className="uppercase"
         >
           {payload.value}
         </text>
+        
+        {concepts.length > 0 && !highlighted ? (
+          <text
+            x={0}
+            y={20}
+            textAnchor={textAnchor}
+            fill="#6B7280"
+            fontSize={10}
+          >
+            Average: {(concepts.reduce((sum, concept) => {
+              const criterionName = Object.keys(chartData[0]).find(key => 
+                key !== 'criterion' && !key.includes('_value') && 
+                chartData.find(item => item.criterion === payload.value)?.[key] !== undefined
+              );
+              return sum + (chartData.find(item => item.criterion === payload.value)?.[criterionName || ''] || 0);
+            }, 0) / concepts.length).toFixed(1)}
+          </text>
+        ) : null}
         
         {concepts.length > 0 ? (
           concepts.map((concept, index) => {
@@ -146,10 +168,10 @@ const EdgesRadarChart = ({ concepts }: EdgesRadarChartProps) => {
               <text
                 key={index}
                 x={0}
-                y={16 + (index * 12)}
+                y={highlighted ? 20 : (26 + (index * 14))}
                 textAnchor={textAnchor}
                 fill={concept.color || "#4B5563"}
-                fontSize={highlighted ? 10 : 9}
+                fontSize={highlighted ? 12 : 10}
                 fontWeight={highlighted === concept.name ? 600 : 500}
               >
                 {concept.name}: {value}
@@ -172,13 +194,13 @@ const EdgesRadarChart = ({ concepts }: EdgesRadarChartProps) => {
   };
 
   return (
-    <div className="flex flex-col gap-6 w-full h-full">
-      <div className="flex flex-wrap gap-2 justify-center">
+    <div className="flex flex-col gap-8 w-full h-full">
+      <div className="flex flex-wrap gap-3 justify-center">
         {concepts.map((concept) => (
           <Badge 
             key={concept.name}
             variant={highlighted === concept.name ? "default" : "outline"}
-            className="cursor-pointer"
+            className="cursor-pointer px-3 py-1 text-sm"
             style={{ 
               backgroundColor: highlighted === concept.name ? concept.color : 'transparent',
               borderColor: concept.color,
@@ -191,45 +213,48 @@ const EdgesRadarChart = ({ concepts }: EdgesRadarChartProps) => {
         ))}
       </div>
       
-      <div className="flex justify-center gap-2 mb-4">
-        <Button variant="outline" size="sm" onClick={handleZoomOut} title="Zoom Out">
-          <ZoomOut size={16} />
+      <div className="flex justify-center gap-3 mb-6">
+        <Button variant="outline" size="sm" onClick={handleZoomOut} title="Zoom Out" className="px-3">
+          <ZoomOut size={16} className="mr-2" /> Zoom Out
         </Button>
-        <Button variant="outline" size="sm" onClick={handleZoomIn} title="Zoom In">
-          <ZoomIn size={16} />
+        <Button variant="outline" size="sm" onClick={handleZoomIn} title="Zoom In" className="px-3">
+          <ZoomIn size={16} className="mr-2" /> Zoom In
         </Button>
-        <Button variant="outline" size="sm" onClick={handleRotate} title="Rotate Chart">
-          <RotateCw size={16} />
+        <Button variant="outline" size="sm" onClick={handleRotate} title="Rotate Chart" className="px-3">
+          <RotateCw size={16} className="mr-2" /> Rotate
         </Button>
-        <Button variant="outline" size="sm" onClick={handleExport} title="Export as PNG">
-          <Download size={16} />
+        <Button variant="outline" size="sm" onClick={handleExport} title="Export as PNG" className="px-3">
+          <Download size={16} className="mr-2" /> Export
         </Button>
       </div>
       
       <div 
-        className={`transition-transform ${animating ? 'opacity-0' : 'opacity-100'}`} 
+        className={`transition-all duration-300 ${animating ? 'opacity-0' : 'opacity-100'}`} 
         style={{ transform: `scale(${zoomLevel}) rotate(${rotation}deg)` }}
       >
-        <ChartContainer config={createChartConfig()} className="w-full h-full">
-          <ResponsiveContainer width="100%" height={400}>
+        <ChartContainer config={createChartConfig()} className="w-full h-full pt-8 pb-16">
+          <ResponsiveContainer width="100%" height={500}>
             <RadarChart 
-              outerRadius="70%"
+              outerRadius="80%"
               data={chartData}
-              margin={{ top: 40, right: 40, bottom: 40, left: 40 }}
+              margin={{ top: 50, right: 60, bottom: 80, left: 60 }}
             >
-              <PolarGrid strokeDasharray="3 3" />
+              <PolarGrid strokeDasharray="4 4" stroke="#CBD5E1" />
               <PolarAngleAxis
                 dataKey="criterion"
                 tick={renderPolarAngleAxisTick}
-                axisLine={false}
+                axisLine={{ stroke: "#E2E8F0", strokeWidth: 1 }}
+                tickLine={false}
               />
               <PolarRadiusAxis
                 angle={90}
                 domain={[0, 10]}
-                tickCount={5}
-                tick={{ fontSize: 10 }}
+                tickCount={6}
+                tick={{ fontSize: 10, fill: "#64748B" }}
+                axisLine={false}
+                stroke="#CBD5E1"
               />
-              <ChartTooltip content={<ChartTooltipContent />} />
+              <ChartTooltip content={<CustomTooltip />} />
 
               {concepts.map((concept, index) => (
                 <Radar
@@ -238,8 +263,8 @@ const EdgesRadarChart = ({ concepts }: EdgesRadarChartProps) => {
                   dataKey={concept.name}
                   stroke={concept.color}
                   fill={concept.color}
-                  fillOpacity={highlighted === concept.name ? 0.4 : 0.2}
-                  strokeWidth={highlighted === concept.name ? 2 : 1}
+                  fillOpacity={highlighted === concept.name ? 0.5 : 0.2}
+                  strokeWidth={highlighted === concept.name ? 3 : 2}
                   isAnimationActive={true}
                   animationDuration={500}
                   style={{ display: highlighted && highlighted !== concept.name ? 'none' : 'block' }}
@@ -247,9 +272,20 @@ const EdgesRadarChart = ({ concepts }: EdgesRadarChartProps) => {
               ))}
 
               <Legend 
-                wrapperStyle={{ paddingTop: '20px' }}
+                wrapperStyle={{ bottom: -30, paddingTop: "40px" }}
+                iconSize={12}
+                iconType="circle"
                 formatter={(value) => {
-                  return <span style={{ color: highlighted === value ? 'black' : 'gray', fontWeight: highlighted === value ? 'bold' : 'normal' }}>{value}</span>;
+                  return (
+                    <span style={{ 
+                      color: highlighted === value ? 'black' : '#4B5563', 
+                      fontWeight: highlighted === value ? 'bold' : 'normal',
+                      padding: '0 8px',
+                      fontSize: '14px'
+                    }}>
+                      {value}
+                    </span>
+                  );
                 }}
               />
             </RadarChart>
