@@ -13,6 +13,7 @@ export type Database = {
         Row: {
           additional_context: string | null
           asset_url: string | null
+          brand_name: string | null
           color: string | null
           concept_name: string
           created_at: string
@@ -29,6 +30,7 @@ export type Database = {
         Insert: {
           additional_context?: string | null
           asset_url?: string | null
+          brand_name?: string | null
           color?: string | null
           concept_name: string
           created_at?: string
@@ -45,6 +47,7 @@ export type Database = {
         Update: {
           additional_context?: string | null
           asset_url?: string | null
+          brand_name?: string | null
           color?: string | null
           concept_name?: string
           created_at?: string

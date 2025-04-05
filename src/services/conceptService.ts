@@ -49,7 +49,7 @@ export const fetchUserConcepts = async () => {
       assetUrl: evaluation.asset_url,
       kpisObjectives: evaluation.kpis_objectives,
       additionalContext: evaluation.additional_context,
-      brandName: '' // Default to empty string as brand_name is not in the database schema yet
+      brandName: evaluation.brand_name || '' // Now we can properly fetch the brand_name from database
     }));
   } catch (error) {
     console.error('Error fetching concepts:', error);
