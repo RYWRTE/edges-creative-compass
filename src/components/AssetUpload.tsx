@@ -18,6 +18,7 @@ const AssetUpload = ({ onConceptGenerated }: AssetUploadProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [assetUrl, setAssetUrl] = useState<string>("");
   const [assetName, setAssetName] = useState<string>("");
+  const [brandName, setBrandName] = useState<string>("");
   const [kpisObjectives, setKpisObjectives] = useState<string>("");
   const [additionalContext, setAdditionalContext] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -62,6 +63,10 @@ const AssetUpload = ({ onConceptGenerated }: AssetUploadProps) => {
     setAssetName(e.target.value);
   };
 
+  const handleBrandNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setBrandName(e.target.value);
+  };
+
   const handleKpisObjectivesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setKpisObjectives(e.target.value);
   };
@@ -91,7 +96,8 @@ const AssetUpload = ({ onConceptGenerated }: AssetUploadProps) => {
         source: 'ai-generated',
         assetUrl: assetUrl,
         kpisObjectives: kpisObjectives || undefined,
-        additionalContext: additionalContext || undefined
+        additionalContext: additionalContext || undefined,
+        brandName: brandName || undefined
       };
       
       onConceptGenerated(newConcept);
@@ -100,6 +106,7 @@ const AssetUpload = ({ onConceptGenerated }: AssetUploadProps) => {
       setFile(null);
       setAssetUrl("");
       setAssetName("");
+      setBrandName("");
       setKpisObjectives("");
       setAdditionalContext("");
       
@@ -163,6 +170,20 @@ const AssetUpload = ({ onConceptGenerated }: AssetUploadProps) => {
             value={assetName}
             onChange={handleAssetNameChange}
             placeholder="Enter a name for this asset"
+            disabled={isLoading}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label htmlFor="brand-name" className="block text-sm font-medium">
+            Brand Name
+          </label>
+          <Input
+            id="brand-name"
+            type="text"
+            value={brandName}
+            onChange={handleBrandNameChange}
+            placeholder="Enter the brand name"
             disabled={isLoading}
           />
         </div>

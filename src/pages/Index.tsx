@@ -3,17 +3,19 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import EdgesRadarChart from "@/components/EdgesRadarChart";
 import AssetUpload from "@/components/AssetUpload";
-import { Concept } from "@/types/concept";
+import { Concept, BrandCollection } from "@/types/concept";
 import { Button } from "@/components/ui/button";
-import { PlusIcon, Trash2Icon, SaveIcon, LogInIcon } from "lucide-react";
+import { PlusIcon, Trash2Icon, SaveIcon, LogInIcon, FolderIcon } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { saveConcept, fetchUserConcepts } from "@/services/conceptService";
 import AuthButton from "@/components/AuthButton";
+import { v4 as uuidv4 } from '@supabase/supabase-js/dist/module/lib/helpers';
 
 const Index = () => {
   const [concepts, setConcepts] = useState<Concept[]>([]);
+  const [collections, setCollections] = useState<BrandCollection[]>([]);
   const [showForm, setShowForm] = useState(true);
   const [user, setUser] = useState<any>(null);
   const { toast } = useToast();
@@ -50,6 +52,26 @@ const Index = () => {
     if (userConcepts.length > 0) {
       setConcepts(userConcepts);
       setShowForm(false);
+      
+      // Group concepts by brand name to create collections
+      const brandGroups = userConcepts.reduce((groups: Record<string, Concept[]>, concept) => {
+        const brandName = concept.brandName || 'Uncategorized';
+        if (!groups[brandName]) {
+          groups[brandName] = [];
+        }
+        groups[brandName].push(concept);
+        return groups;
+      }, {});
+      
+      // Create brand collections from the groups
+      const brandCollections: BrandCollection[] = Object.entries(brandGroups).map(([name, concepts]) => ({
+        id: uuidv4(),
+        name,
+        concepts,
+        createdAt: new Date()
+      }));
+      
+      setCollections(brandCollections);
     }
   };
 
@@ -74,6 +96,12 @@ const Index = () => {
     }
     
     setConcepts([...concepts, concept]);
+    
+    // Update collections if the concept has a brand name
+    if (concept.brandName) {
+      updateCollections(concept);
+    }
+    
     setShowForm(false);
     
     toast({
@@ -82,11 +110,47 @@ const Index = () => {
     });
   };
 
+  const updateCollections = (concept: Concept) => {
+    const brandName = concept.brandName || 'Uncategorized';
+    const existingCollectionIndex = collections.findIndex(c => c.name === brandName);
+    
+    if (existingCollectionIndex >= 0) {
+      // Update existing collection
+      const updatedCollections = [...collections];
+      updatedCollections[existingCollectionIndex].concepts.push(concept);
+      setCollections(updatedCollections);
+    } else {
+      // Create a new collection
+      const newCollection: BrandCollection = {
+        id: uuidv4(),
+        name: brandName,
+        concepts: [concept],
+        createdAt: new Date()
+      };
+      setCollections([...collections, newCollection]);
+    }
+  };
+
   const removeConcept = (index: number) => {
     const updatedConcepts = [...concepts];
     const removedConcept = updatedConcepts[index];
     updatedConcepts.splice(index, 1);
     setConcepts(updatedConcepts);
+    
+    // Update collections by removing the concept
+    if (removedConcept.brandName) {
+      const updatedCollections = collections.map(collection => {
+        if (collection.name === removedConcept.brandName) {
+          return {
+            ...collection,
+            concepts: collection.concepts.filter(c => c !== removedConcept)
+          };
+        }
+        return collection;
+      }).filter(collection => collection.concepts.length > 0);
+      
+      setCollections(updatedCollections);
+    }
     
     toast({
       title: "Concept removed",

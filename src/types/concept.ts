@@ -11,4 +11,12 @@ export interface Concept {
   assetUrl?: string;
   kpisObjectives?: string;
   additionalContext?: string;
+  brandName?: string;
+}
+
+export interface BrandCollection {
+  id: string;
+  name: string;
+  concepts: Concept[];
+  createdAt: Date;
 }
