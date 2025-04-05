@@ -34,13 +34,13 @@ export const RadarChartDisplay = ({
   return (
     <div className="w-full flex flex-col">
       <ChartContainer config={chartConfig} className="w-full h-full">
-        <ResponsiveContainer width="100%" height={isMobile ? 350 : 600}>
+        <ResponsiveContainer width="100%" height={isMobile ? 450 : 700}>
           <RadarChart 
-            outerRadius={isMobile ? "45%" : "65%"}
+            outerRadius={isMobile ? "55%" : "70%"}
             data={chartData}
             margin={isMobile 
-              ? { top: 5, right: 5, bottom: 10, left: 5 }
-              : { top: 20, right: 30, bottom: 20, left: 30 }
+              ? { top: 20, right: 20, bottom: 20, left: 20 }
+              : { top: 40, right: 40, bottom: 40, left: 40 }
             }
           >
             <PolarGrid strokeDasharray="3 3" stroke="#CBD5E1" />
@@ -79,8 +79,7 @@ export const RadarChartDisplay = ({
         </ResponsiveContainer>
       </ChartContainer>
       
-      {/* Badges moved outside the chart to replace the Legend */}
-      <div className={`mt-${isMobile ? '2' : '4'}`}>
+      <div className={`mt-${isMobile ? '4' : '6'}`}>
         <ChartBadges
           concepts={concepts}
           highlighted={highlighted}

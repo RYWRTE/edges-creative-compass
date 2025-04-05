@@ -29,19 +29,19 @@ export const PolarAxisTick = (props: PolarAxisTickProps) => {
   const centerY = 175; // Approximate center Y of chart
   const angle = Math.atan2(y - centerY, x - centerX) * (180 / Math.PI);
   
-  // Adjust positioning based on angle
+  // Adjust positioning based on angle with increased distances
   if (angle > -45 && angle < 45) { // Right side
     alignment = "start";
-    xOffset = isMobile ? 5 : 12;
+    xOffset = isMobile ? 8 : 16;
   } else if (angle > 45 && angle < 135) { // Bottom side
     alignment = "middle";
-    yOffset = isMobile ? 8 : 15;
+    yOffset = isMobile ? 12 : 20;
   } else if ((angle > 135 && angle <= 180) || (angle >= -180 && angle < -135)) { // Left side
     alignment = "end";
-    xOffset = isMobile ? -5 : -12;
+    xOffset = isMobile ? -8 : -16;
   } else { // Top side
     alignment = "middle";
-    yOffset = isMobile ? -8 : -15;
+    yOffset = isMobile ? -12 : -20;
   }
   
   // On mobile, display just the main label and simple value
@@ -53,7 +53,7 @@ export const PolarAxisTick = (props: PolarAxisTickProps) => {
           y={0}
           textAnchor={alignment}
           fill="#1E293B"
-          fontSize={12}
+          fontSize={13}
           fontWeight={600}
         >
           {payload.value}
@@ -63,10 +63,10 @@ export const PolarAxisTick = (props: PolarAxisTickProps) => {
         {highlighted && concepts.length > 0 ? (
           <text
             x={0}
-            y={18}
+            y={20}
             textAnchor={alignment}
             fill={concepts.find(c => c.name === highlighted)?.color || "#64748B"}
-            fontSize={11}
+            fontSize={12}
             fontWeight={600}
           >
             {chartData.find(item => item.criterion === payload.value)?.[highlighted] || 0}
@@ -84,7 +84,7 @@ export const PolarAxisTick = (props: PolarAxisTickProps) => {
         y={0}
         textAnchor={alignment}
         fill="#1E293B"
-        fontSize={14}
+        fontSize={15}
         fontWeight={600}
         className="uppercase"
       >
@@ -95,10 +95,10 @@ export const PolarAxisTick = (props: PolarAxisTickProps) => {
       {concepts.length > 0 && !highlighted ? (
         <text
           x={0}
-          y={22}
+          y={24}
           textAnchor={alignment}
           fill="#64748B"
-          fontSize={12}
+          fontSize={13}
         >
           Average: {(concepts.reduce((sum, concept) => {
             const criterionName = Object.keys(chartData[0]).find(key => 
@@ -116,15 +116,15 @@ export const PolarAxisTick = (props: PolarAxisTickProps) => {
           {concepts.map((concept, index) => {
             if (highlighted && highlighted !== concept.name) return null;
             
-            const value = chartData.find(item => item.criterion === payload.value)?.[`${concept.name}_value`] || 0;
+            const value = chartData.find(item => item.criterion === payload.value)?.[concept.name] || 0;
             return (
               <text
                 key={index}
                 x={0}
-                y={highlighted ? 22 : (42 + (index * 20))}
+                y={highlighted ? 24 : (44 + (index * 22))}
                 textAnchor={alignment}
                 fill={concept.color || "#4B5563"}
-                fontSize={highlighted ? 13 : 12}
+                fontSize={highlighted ? 14 : 13}
                 fontWeight={highlighted === concept.name ? 700 : 500}
               >
                 {concept.name}: {value}
