@@ -91,10 +91,10 @@ const EdgesRadarChart = ({ concepts }: EdgesRadarChartProps) => {
         <text
           x={0}
           y={16}
-          textAnchor={textAnchor}  // Changed to match label's textAnchor
-          fill="#4B5563"  // Set to same color as label
+          textAnchor={textAnchor}
+          fill="#4B5563"
           fontSize={9}
-          fontWeight={500}  // Added font weight to match label style
+          fontWeight={500}  // Kept the same font weight as the label
         >
           ({value})
         </text>
