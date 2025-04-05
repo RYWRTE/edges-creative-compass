@@ -4,7 +4,7 @@ import EdgesRadarChart from "@/components/EdgesRadarChart";
 import AssetUpload from "@/components/AssetUpload";
 import { Concept, BrandCollection } from "@/types/concept";
 import { Button } from "@/components/ui/button";
-import { PlusIcon, Trash2Icon, SaveIcon, LogInIcon, FolderIcon, PencilIcon } from "lucide-react";
+import { PlusIcon, Trash2Icon, SaveIcon, LogInIcon, PencilIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,6 +26,7 @@ const Index = () => {
   const [showForm, setShowForm] = useState(true);
   const [user, setUser] = useState<any>(null);
   const [editingConcept, setEditingConcept] = useState<{index: number, name: string} | null>(null);
+  const [expandedView, setExpandedView] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -50,6 +51,14 @@ const Index = () => {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (concepts.length > 0) {
+      setExpandedView(true);
+    } else {
+      setExpandedView(false);
+    }
+  }, [concepts.length]);
 
   const loadUserConcepts = async () => {
     const userConcepts = await fetchUserConcepts();
@@ -211,6 +220,10 @@ const Index = () => {
     }
   };
 
+  const toggleExpandedView = () => {
+    setExpandedView(!expandedView);
+  };
+
   return (
     <div className="container mx-auto py-8 px-4 sm:px-6">
       <div className="mb-8 text-center">
@@ -221,115 +234,139 @@ const Index = () => {
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-8">
-        <div>
-          {showForm ? (
-            <AssetUpload onConceptGenerated={addConcept} />
-          ) : (
-            <div className="flex flex-col gap-4">
-              <Button 
-                onClick={() => setShowForm(true)} 
-                className="w-full"
-              >
-                <PlusIcon size={16} className="mr-2" />
-                Upload New Asset
-              </Button>
-              
-              <Card>
-                <CardHeader>
-                  <CardTitle>Evaluated Concepts</CardTitle>
-                  <CardDescription>
-                    Compare your concepts side by side
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {concepts.length > 0 ? (
-                    <ul className="space-y-2">
-                      {concepts.map((concept, index) => (
-                        <li key={index} className="flex items-center justify-between p-3 bg-white rounded-md border">
-                          <div className="flex items-center gap-3">
-                            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: concept.color }}></div>
-                            <div>
-                              <span className="font-medium">{concept.name}</span>
-                              <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">
-                                {concept.source === 'ai-generated' ? 'AI Rated' : 'Manual'}
-                              </span>
+      <div className={`grid gap-8 ${expandedView ? 'grid-cols-1' : 'md:grid-cols-2'}`}>
+        {(!expandedView || concepts.length === 0) && (
+          <div>
+            {showForm ? (
+              <AssetUpload onConceptGenerated={addConcept} />
+            ) : (
+              <div className="flex flex-col gap-4">
+                <Button 
+                  onClick={() => setShowForm(true)} 
+                  className="w-full"
+                >
+                  <PlusIcon size={16} className="mr-2" />
+                  Upload New Asset
+                </Button>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Evaluated Concepts</CardTitle>
+                    <CardDescription>
+                      Compare your concepts side by side
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {concepts.length > 0 ? (
+                      <ul className="space-y-2">
+                        {concepts.map((concept, index) => (
+                          <li key={index} className="flex items-center justify-between p-3 bg-white rounded-md border">
+                            <div className="flex items-center gap-3">
+                              <div className="w-4 h-4 rounded-full" style={{ backgroundColor: concept.color }}></div>
+                              <div>
+                                <span className="font-medium">{concept.name}</span>
+                                <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">
+                                  {concept.source === 'ai-generated' ? 'AI Rated' : 'Manual'}
+                                </span>
+                              </div>
                             </div>
-                          </div>
-                          <div className="flex gap-2">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleEditConcept(index)}
-                              aria-label={`Edit ${concept.name}`}
-                            >
-                              <PencilIcon size={16} />
-                            </Button>
-                            {user && (
+                            <div className="flex gap-2">
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                onClick={() => handleSaveConcept(concept)}
-                                aria-label={`Save ${concept.name}`}
+                                onClick={() => handleEditConcept(index)}
+                                aria-label={`Edit ${concept.name}`}
                               >
-                                <SaveIcon size={16} />
+                                <PencilIcon size={16} />
                               </Button>
-                            )}
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => removeConcept(index)}
-                              aria-label={`Remove ${concept.name}`}
-                            >
-                              <Trash2Icon size={16} />
-                            </Button>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="text-gray-500 text-center py-4">No concepts added yet</p>
-                  )}
-                </CardContent>
-              </Card>
-              {!user && (
-                <Card>
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-center flex-col gap-2 py-2">
-                      <p className="text-gray-600 text-center">Sign in to save your concepts</p>
-                      <Button 
-                        variant="outline" 
-                        onClick={() => navigate("/auth")}
-                        className="mt-2"
-                      >
-                        <LogInIcon size={16} className="mr-2" />
-                        Sign In
-                      </Button>
-                    </div>
+                              {user && (
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => handleSaveConcept(concept)}
+                                  aria-label={`Save ${concept.name}`}
+                                >
+                                  <SaveIcon size={16} />
+                                </Button>
+                              )}
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => removeConcept(index)}
+                                aria-label={`Remove ${concept.name}`}
+                              >
+                                <Trash2Icon size={16} />
+                              </Button>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-gray-500 text-center py-4">No concepts added yet</p>
+                    )}
                   </CardContent>
                 </Card>
-              )}
-            </div>
-          )}
-        </div>
+                {!user && (
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-center flex-col gap-2 py-2">
+                        <p className="text-gray-600 text-center">Sign in to save your concepts</p>
+                        <Button 
+                          variant="outline" 
+                          onClick={() => navigate("/auth")}
+                          className="mt-2"
+                        >
+                          <LogInIcon size={16} className="mr-2" />
+                          Sign In
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            )}
+          </div>
+        )}
 
-        <div>
+        <div className={expandedView ? "w-full max-w-5xl mx-auto" : ""}>
           <Card className="h-full">
-            <CardHeader>
-              <CardTitle>
-                {concepts.length === 0
-                  ? "EDGES Creative Evaluation"
-                  : concepts.length === 1
-                  ? `EDGES Creative Evaluation: ${concepts[0].name}`
-                  : "EDGES Creative Evaluation Comparison"}
-              </CardTitle>
-              <CardDescription>
-                Visualization of your creative evaluation
-              </CardDescription>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle>
+                  {concepts.length === 0
+                    ? "EDGES Creative Evaluation"
+                    : concepts.length === 1
+                    ? `EDGES Creative Evaluation: ${concepts[0].name}`
+                    : "EDGES Creative Evaluation Comparison"}
+                </CardTitle>
+                <CardDescription>
+                  Visualization of your creative evaluation
+                </CardDescription>
+              </div>
+              {concepts.length > 0 && (
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={toggleExpandedView}
+                  className="ml-2"
+                >
+                  {expandedView ? (
+                    <>
+                      <ChevronLeftIcon size={16} className="mr-1" />
+                      Show List
+                    </>
+                  ) : (
+                    <>
+                      Expand View
+                      <ChevronRightIcon size={16} className="ml-1" />
+                    </>
+                  )}
+                </Button>
+              )}
             </CardHeader>
             <CardContent>
               {concepts.length > 0 ? (
-                <div className="w-full aspect-square max-w-md mx-auto">
+                <div className={`w-full mx-auto ${expandedView ? 'max-w-4xl' : 'max-w-md'}`}>
                   <EdgesRadarChart concepts={concepts} />
                 </div>
               ) : (
