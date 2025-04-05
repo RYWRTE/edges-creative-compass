@@ -29,22 +29,21 @@ export const PolarAxisTick = (props: PolarAxisTickProps) => {
   const centerY = 175; // Approximate center Y of chart
   const angle = Math.atan2(y - centerY, x - centerX) * (180 / Math.PI);
   
-  // Adjust positioning based on angle with increased distances
+  // Adjust positioning based on angle with increased distances for label placement
   if (angle > -45 && angle < 45) { // Right side
     alignment = "start";
-    xOffset = isMobile ? 8 : 16;
+    xOffset = isMobile ? 15 : 28;
   } else if (angle > 45 && angle < 135) { // Bottom side
     alignment = "middle";
-    yOffset = isMobile ? 12 : 20;
+    yOffset = isMobile ? 18 : 30;
   } else if ((angle > 135 && angle <= 180) || (angle >= -180 && angle < -135)) { // Left side
     alignment = "end";
-    xOffset = isMobile ? -8 : -16;
+    xOffset = isMobile ? -15 : -28;
   } else { // Top side
     alignment = "middle";
-    yOffset = isMobile ? -12 : -20;
+    yOffset = isMobile ? -18 : -30;
   }
   
-  // Simple label display, no metrics
   return (
     <g transform={`translate(${x + xOffset},${y + yOffset})`}>
       <text
@@ -52,7 +51,7 @@ export const PolarAxisTick = (props: PolarAxisTickProps) => {
         y={0}
         textAnchor={alignment}
         fill="#1E293B"
-        fontSize={isMobile ? 13 : 15}
+        fontSize={isMobile ? 14 : 16}
         fontWeight={600}
         className="uppercase"
       >

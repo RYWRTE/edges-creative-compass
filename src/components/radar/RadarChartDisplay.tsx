@@ -38,13 +38,13 @@ export const RadarChartDisplay = ({
   return (
     <div className="w-full flex flex-col">
       <ChartContainer config={chartConfig} className="w-full h-full">
-        <ResponsiveContainer width="100%" height={isMobile ? 450 : 700}>
+        <ResponsiveContainer width="100%" height={isMobile ? 585 : 910}>
           <RadarChart 
-            outerRadius={isMobile ? "55%" : "70%"}
+            outerRadius={isMobile ? "65%" : "80%"}
             data={chartData}
             margin={isMobile 
-              ? { top: 20, right: 20, bottom: 20, left: 20 }
-              : { top: 40, right: 40, bottom: 40, left: 40 }
+              ? { top: 60, right: 60, bottom: 60, left: 60 }
+              : { top: 100, right: 100, bottom: 100, left: 100 }
             }
           >
             <PolarGrid strokeDasharray="3 3" stroke="#CBD5E1" />
