@@ -11,6 +11,8 @@ import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
 import Header from "./components/Header";
 import ProtectedRoute from "./components/ProtectedRoute";
+import SubscriptionSuccess from "./pages/SubscriptionSuccess";
+import SubscriptionCanceled from "./pages/SubscriptionCanceled";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +36,16 @@ const App = () => (
               <Route path="/dashboard" element={
                 <ProtectedRoute>
                   <Dashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/subscription-success" element={
+                <ProtectedRoute>
+                  <SubscriptionSuccess />
+                </ProtectedRoute>
+              } />
+              <Route path="/subscription-canceled" element={
+                <ProtectedRoute>
+                  <SubscriptionCanceled />
                 </ProtectedRoute>
               } />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

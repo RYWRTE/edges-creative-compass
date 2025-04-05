@@ -8,7 +8,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Check, Info } from "lucide-react";
+import { Check, Info, Loader2 } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -16,6 +16,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface PricingFeature {
   name: string;
@@ -24,6 +28,7 @@ interface PricingFeature {
 }
 
 interface PricingTier {
+  id: string;
   name: string;
   price: string;
   description: string;
@@ -36,6 +41,7 @@ interface PricingTier {
 
 const pricingTiers: PricingTier[] = [
   {
+    id: "free",
     name: "Free",
     price: "$0",
     description: "Try EDGES with limited features",
@@ -53,8 +59,9 @@ const pricingTiers: PricingTier[] = [
     ],
   },
   {
+    id: "professional",
     name: "Professional",
-    price: "$50", // Updated price
+    price: "$50",
     description: "Perfect for individual marketers and small agencies",
     buttonText: "Subscribe Now",
     highlighted: true,
@@ -71,10 +78,11 @@ const pricingTiers: PricingTier[] = [
     ],
   },
   {
+    id: "enterprise",
     name: "Enterprise",
     price: "$99",
     description: "For marketing teams and large agencies",
-    buttonText: "Contact Sales",
+    buttonText: "Subscribe Now",
     buttonVariant: "secondary",
     features: [
       { name: "Unlimited evaluations", included: true },
@@ -94,8 +102,71 @@ interface PricingModalProps {
 }
 
 const PricingModal = ({ trigger }: PricingModalProps) => {
+  const [loading, setLoading] = useState<string | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  const handleSubscribe = async (planId: string) => {
+    try {
+      setLoading(planId);
+      
+      // Check if user is authenticated
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        // Redirect to auth page if not logged in
+        navigate("/auth", { state: { from: "/tool" } });
+        setIsOpen(false);
+        return;
+      }
+
+      if (planId === "free") {
+        // For free plan, call the edge function but handle it specially
+        const { data, error } = await supabase.functions.invoke("create-checkout", {
+          body: { planId },
+        });
+
+        if (error) throw error;
+        
+        if (data.success) {
+          toast({
+            title: "Free Plan Activated",
+            description: "You're now on the Free plan",
+            variant: "default",
+          });
+          setIsOpen(false);
+          return;
+        }
+      }
+
+      // For paid plans, create a checkout session
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { planId },
+      });
+
+      if (error) throw error;
+      
+      // Redirect to Stripe Checkout
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error("No checkout URL returned");
+      }
+    } catch (error) {
+      console.error("Error creating checkout session:", error);
+      toast({
+        title: "Error",
+        description: "There was a problem setting up your subscription. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(null);
+    }
+  };
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {trigger || (
           <Button variant="outline" className="rounded-full">
@@ -131,7 +202,7 @@ const PricingModal = ({ trigger }: PricingModalProps) => {
               <h3 className="text-xl font-bold">{tier.name}</h3>
               <div className="mt-2 flex items-baseline">
                 <span className="text-3xl font-bold">{tier.price}</span>
-                {tier.name !== "Free" && (
+                {tier.id !== "free" && (
                   <span className="text-gray-500 ml-1">/month</span>
                 )}
               </div>
@@ -181,8 +252,17 @@ const PricingModal = ({ trigger }: PricingModalProps) => {
                     ? "bg-purple-600 hover:bg-purple-700" 
                     : ""
                 }`}
+                onClick={() => handleSubscribe(tier.id)}
+                disabled={loading === tier.id}
               >
-                {tier.buttonText}
+                {loading === tier.id ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> 
+                    Processing...
+                  </>
+                ) : (
+                  tier.buttonText
+                )}
               </Button>
             </div>
           ))}
