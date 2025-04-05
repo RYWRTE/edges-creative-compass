@@ -1,6 +1,5 @@
 
 import { useRadarChartData } from "@/components/radar/useRadarChartData";
-import { ChartBadges } from "@/components/radar/ChartBadges";
 import { RadarChartDisplay } from "@/components/radar/RadarChartDisplay";
 import { Concept } from "@/types/concept";
 import { useState } from "react";
@@ -14,7 +13,7 @@ const EdgesRadarChart = ({ concepts }: EdgesRadarChartProps) => {
   const [highlighted, setHighlighted] = useState<string | null>(null);
   const isMobile = useIsMobile();
   
-  // Simplified, removed zoom and rotation states
+  // Get chart data and config
   const { chartData, chartConfig } = useRadarChartData(concepts);
 
   const handleConceptToggle = (name: string) => {

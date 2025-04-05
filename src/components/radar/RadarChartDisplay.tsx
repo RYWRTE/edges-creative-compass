@@ -13,6 +13,7 @@ import { RadarTooltip } from "./RadarTooltip";
 import { PolarAxisTick } from "./PolarAxisTick";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ChartBadges } from "./ChartBadges";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 interface RadarChartDisplayProps {
   concepts: Concept[];
@@ -30,6 +31,9 @@ export const RadarChartDisplay = ({
   onToggleHighlight
 }: RadarChartDisplayProps) => {
   const isMobile = useIsMobile();
+
+  // Extract criteria names from chart data
+  const criteriaNames = chartData.map(item => item.criterion);
 
   return (
     <div className="w-full flex flex-col">
@@ -85,6 +89,43 @@ export const RadarChartDisplay = ({
           highlighted={highlighted}
           onToggle={onToggleHighlight}
         />
+      </div>
+      
+      {/* Ratings Table */}
+      <div className="mt-8 overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[150px]">Asset</TableHead>
+              {criteriaNames.map((criterion, index) => (
+                <TableHead key={index} className="text-center">{criterion}</TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {concepts.map((concept, conceptIndex) => (
+              <TableRow key={conceptIndex} className={highlighted === concept.name ? "bg-muted/20" : ""}>
+                <TableCell className="font-medium">
+                  <div className="flex items-center gap-2">
+                    <div 
+                      className="w-3 h-3 rounded-full" 
+                      style={{ backgroundColor: concept.color }}
+                    ></div>
+                    {concept.name}
+                  </div>
+                </TableCell>
+                {criteriaNames.map((criterion, criterionIndex) => {
+                  const value = chartData[criterionIndex][concept.name];
+                  return (
+                    <TableCell key={criterionIndex} className="text-center">
+                      <span className="font-mono">{value}</span>
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

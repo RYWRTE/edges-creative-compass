@@ -14,7 +14,7 @@ interface PolarAxisTickProps {
 }
 
 export const PolarAxisTick = (props: PolarAxisTickProps) => {
-  const { x = 0, y = 0, payload, textAnchor, concepts, highlighted, chartData } = props;
+  const { x = 0, y = 0, payload, textAnchor } = props;
   const isMobile = useIsMobile();
   
   if (!payload) return null;
@@ -44,39 +44,7 @@ export const PolarAxisTick = (props: PolarAxisTickProps) => {
     yOffset = isMobile ? -12 : -20;
   }
   
-  // On mobile, display just the main label and simple value
-  if (isMobile) {
-    return (
-      <g transform={`translate(${x + xOffset},${y + yOffset})`}>
-        <text
-          x={0}
-          y={0}
-          textAnchor={alignment}
-          fill="#1E293B"
-          fontSize={13}
-          fontWeight={600}
-        >
-          {payload.value}
-        </text>
-        
-        {/* Only show value for highlighted concept on mobile */}
-        {highlighted && concepts.length > 0 ? (
-          <text
-            x={0}
-            y={20}
-            textAnchor={alignment}
-            fill={concepts.find(c => c.name === highlighted)?.color || "#64748B"}
-            fontSize={12}
-            fontWeight={600}
-          >
-            {chartData.find(item => item.criterion === payload.value)?.[highlighted] || 0}
-          </text>
-        ) : null}
-      </g>
-    );
-  }
-  
-  // Desktop view with more details
+  // Simple label display, no metrics
   return (
     <g transform={`translate(${x + xOffset},${y + yOffset})`}>
       <text
@@ -84,55 +52,12 @@ export const PolarAxisTick = (props: PolarAxisTickProps) => {
         y={0}
         textAnchor={alignment}
         fill="#1E293B"
-        fontSize={15}
+        fontSize={isMobile ? 13 : 15}
         fontWeight={600}
         className="uppercase"
       >
         {payload.value}
       </text>
-      
-      {/* If we're not highlighting anything, show average values */}
-      {concepts.length > 0 && !highlighted ? (
-        <text
-          x={0}
-          y={24}
-          textAnchor={alignment}
-          fill="#64748B"
-          fontSize={13}
-        >
-          Average: {(concepts.reduce((sum, concept) => {
-            const criterionName = Object.keys(chartData[0]).find(key => 
-              key !== 'criterion' && !key.includes('_value') && 
-              chartData.find(item => item.criterion === payload.value)?.[key] !== undefined
-            );
-            return sum + (chartData.find(item => item.criterion === payload.value)?.[criterionName || ''] || 0);
-          }, 0) / concepts.length).toFixed(1)}
-        </text>
-      ) : null}
-      
-      {/* If we're showing all concepts or just one highlighted one */}
-      {concepts.length > 0 ? (
-        <g>
-          {concepts.map((concept, index) => {
-            if (highlighted && highlighted !== concept.name) return null;
-            
-            const value = chartData.find(item => item.criterion === payload.value)?.[concept.name] || 0;
-            return (
-              <text
-                key={index}
-                x={0}
-                y={highlighted ? 24 : (44 + (index * 22))}
-                textAnchor={alignment}
-                fill={concept.color || "#4B5563"}
-                fontSize={highlighted ? 14 : 13}
-                fontWeight={highlighted === concept.name ? 700 : 500}
-              >
-                {concept.name}: {value}
-              </text>
-            );
-          })}
-        </g>
-      ) : null}
     </g>
   );
 };

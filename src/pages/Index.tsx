@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import EdgesRadarChart from "@/components/EdgesRadarChart";
@@ -5,7 +6,7 @@ import AssetUpload from "@/components/AssetUpload";
 import { Concept, BrandCollection } from "@/types/concept";
 import { Button } from "@/components/ui/button";
 import { PlusIcon, Trash2Icon, SaveIcon, LogInIcon, PencilIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { saveConcept, fetchUserConcepts } from "@/services/conceptService";
