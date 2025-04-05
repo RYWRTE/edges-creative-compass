@@ -8,6 +8,7 @@ import { Concept } from "@/types/concept";
 import EdgesRadarChart from "@/components/EdgesRadarChart";
 import { ArrowLeft, FileImage, BarChart3 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import SubscriptionUsageTracker from "@/components/SubscriptionUsageTracker";
 
 const Dashboard = () => {
   const [concepts, setConcepts] = useState<Concept[]>([]);
@@ -61,6 +62,10 @@ const Dashboard = () => {
           Back to Evaluator
         </Link>
         <h1 className="text-3xl font-bold text-gray-900">Evaluation Dashboard</h1>
+      </div>
+
+      <div className="mb-6">
+        <SubscriptionUsageTracker />
       </div>
 
       <Tabs defaultValue="all">
