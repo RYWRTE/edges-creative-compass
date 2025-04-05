@@ -105,9 +105,9 @@ const AssetUpload = ({ onConceptGenerated }: AssetUploadProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Upload Asset for AI Evaluation</CardTitle>
+        <CardTitle>Upload Asset for EDGES Evaluation</CardTitle>
         <CardDescription>
-          Upload an image asset to generate EDGES ratings using AI
+          Upload an image asset to generate EDGES ratings using EDGES
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -162,7 +162,7 @@ const AssetUpload = ({ onConceptGenerated }: AssetUploadProps) => {
               Generating EDGES Evaluation...
             </>
           ) : (
-            "Generate AI Evaluation"
+            "Generate EDGES Evaluation"
           )}
         </Button>
 
