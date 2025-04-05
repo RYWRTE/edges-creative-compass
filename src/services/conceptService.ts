@@ -2,6 +2,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { Concept } from "@/types/concept";
 import { toast } from "@/components/ui/use-toast";
+import type { Database } from "@/integrations/supabase/types";
 
 /**
  * Saves a concept evaluation to the Supabase database
@@ -87,11 +88,11 @@ export async function fetchUserConcepts(): Promise<Concept[]> {
       gripping: item.gripping,
       experiential: item.experiential,
       subversive: item.subversive,
-      color: item.color,
+      color: item.color || undefined,
       source: item.source as 'manual' | 'ai-generated' | undefined,
-      assetUrl: item.asset_url,
-      kpisObjectives: item.kpis_objectives,
-      additionalContext: item.additional_context
+      assetUrl: item.asset_url || undefined,
+      kpisObjectives: item.kpis_objectives || undefined,
+      additionalContext: item.additional_context || undefined
     }));
   } catch (error) {
     console.error("Error in fetchUserConcepts:", error);
