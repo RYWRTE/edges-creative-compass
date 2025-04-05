@@ -49,7 +49,7 @@ export const fetchUserConcepts = async () => {
       assetUrl: evaluation.asset_url,
       kpisObjectives: evaluation.kpis_objectives,
       additionalContext: evaluation.additional_context,
-      brandName: evaluation.brand_name
+      brandName: evaluation.brand_name || '' // Handle the case where brand_name might be undefined
     }));
   } catch (error) {
     console.error('Error fetching concepts:', error);
