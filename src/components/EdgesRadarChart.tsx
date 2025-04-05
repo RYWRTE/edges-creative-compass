@@ -37,6 +37,17 @@ const EdgesRadarChart = ({ concepts }: EdgesRadarChartProps) => {
         dataPoint[concept.name] = concept[criterion.name as keyof Omit<Concept, "name" | "color">];
       });
 
+      // Add the average value to display in the label
+      if (concepts.length > 0) {
+        let sum = 0;
+        concepts.forEach((concept) => {
+          sum += concept[criterion.name as keyof Omit<Concept, "name" | "color">] as number;
+        });
+        dataPoint.average = Math.round((sum / concepts.length) * 10) / 10; // Round to 1 decimal
+      } else {
+        dataPoint.average = 0;
+      }
+
       return dataPoint;
     });
   };
@@ -60,23 +71,47 @@ const EdgesRadarChart = ({ concepts }: EdgesRadarChartProps) => {
     return null;
   };
 
+  // Custom rendering function for labels with metrics
+  const renderPolarAngleAxisTick = (props: any) => {
+    const { x, y, payload, textAnchor, fontSize } = props;
+    const value = chartData.find(item => item.criterion === payload.value)?.average || 0;
+    
+    return (
+      <g transform={`translate(${x},${y})`}>
+        <text
+          x={0}
+          y={0}
+          textAnchor={textAnchor}
+          fill="#4B5563"
+          fontSize={fontSize}
+          fontWeight={500}
+        >
+          {payload.value}
+        </text>
+        <text
+          x={0}
+          y={16} 
+          textAnchor="middle"
+          fill="#6B7280"
+          fontSize={9}
+        >
+          ({value})
+        </text>
+      </g>
+    );
+  };
+
   return (
     <ResponsiveContainer width="100%" height="100%">
       <RadarChart 
-        outerRadius="75%" 
+        outerRadius="70%" 
         data={chartData}
         margin={{ top: 25, right: 25, bottom: 25, left: 25 }} // Increased margins for better label visibility
       >
         <PolarGrid strokeDasharray="3 3" />
         <PolarAngleAxis
           dataKey="criterion"
-          tick={{ 
-            fill: "#4B5563", 
-            fontSize: 10, 
-            fontWeight: 500,
-            dy: 10, // Move labels outward a bit
-            textAnchor: "middle" // Center the text
-          }}
+          tick={renderPolarAngleAxisTick}
           axisLine={false} // Remove axis line for cleaner look
         />
         <PolarRadiusAxis
