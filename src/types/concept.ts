@@ -7,4 +7,6 @@ export interface Concept {
   experiential: number;
   subversive: number;
   color?: string;
+  source?: 'manual' | 'ai-generated';
+  assetUrl?: string;
 }
