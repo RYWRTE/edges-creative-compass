@@ -34,11 +34,11 @@ export const RadarChartDisplay = ({
       <ChartContainer config={chartConfig} className="w-full h-full">
         <ResponsiveContainer width="100%" height={isMobile ? 350 : 600}>
           <RadarChart 
-            outerRadius={isMobile ? "35%" : "45%"} 
+            outerRadius={isMobile ? "45%" : "65%"}
             data={chartData}
             margin={isMobile 
-              ? { top: 10, right: 30, bottom: 70, left: 30 }
-              : { top: 40, right: 60, bottom: 120, left: 60 }
+              ? { top: 5, right: 5, bottom: 60, left: 5 }
+              : { top: 20, right: 30, bottom: 100, left: 30 }
             }
           >
             <PolarGrid strokeDasharray="3 3" stroke="#CBD5E1" />
@@ -75,7 +75,7 @@ export const RadarChartDisplay = ({
             ))}
 
             <Legend 
-              wrapperStyle={{ bottom: isMobile ? -55 : -80 }}
+              wrapperStyle={{ bottom: isMobile ? -50 : -80 }}
               iconSize={isMobile ? 10 : 16}
               iconType="circle"
               layout="horizontal"
