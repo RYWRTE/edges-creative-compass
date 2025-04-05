@@ -109,137 +109,130 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto py-8 px-4 sm:px-6">
-        <header className="mb-8 flex justify-between items-center">
-          <div className="text-center flex-1">
-            <h1 className="text-3xl font-bold mb-2 text-gray-900">EDGES Creative Evaluation</h1>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Evaluate marketing concepts using five creative criteria: 
-              Entertaining, Daring, Gripping, Experiential, and Subversive.
-            </p>
-          </div>
-          <div>
-            <AuthButton />
-          </div>
-        </header>
+    <div className="container mx-auto py-8 px-4 sm:px-6">
+      <div className="mb-8 text-center">
+        <h1 className="text-3xl font-bold mb-2 text-gray-900">EDGES Creative Evaluation</h1>
+        <p className="text-gray-600 max-w-2xl mx-auto">
+          Evaluate marketing concepts using five creative criteria: 
+          Entertaining, Daring, Gripping, Experiential, and Subversive.
+        </p>
+      </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
-          <div>
-            {showForm ? (
-              <AssetUpload onConceptGenerated={addConcept} />
-            ) : (
-              <div className="flex flex-col gap-4">
-                <Button 
-                  onClick={() => setShowForm(true)} 
-                  className="w-full"
-                >
-                  <PlusIcon size={16} className="mr-2" />
-                  Upload New Asset
-                </Button>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Evaluated Concepts</CardTitle>
-                    <CardDescription>
-                      Compare your concepts side by side
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    {concepts.length > 0 ? (
-                      <ul className="space-y-2">
-                        {concepts.map((concept, index) => (
-                          <li key={index} className="flex items-center justify-between p-3 bg-white rounded-md border">
-                            <div className="flex items-center gap-3">
-                              <div className="w-4 h-4 rounded-full" style={{ backgroundColor: concept.color }}></div>
-                              <div>
-                                <span className="font-medium">{concept.name}</span>
-                                <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">
-                                  {concept.source === 'ai-generated' ? 'AI Rated' : 'Manual'}
-                                </span>
-                              </div>
+      <div className="grid md:grid-cols-2 gap-8">
+        <div>
+          {showForm ? (
+            <AssetUpload onConceptGenerated={addConcept} />
+          ) : (
+            <div className="flex flex-col gap-4">
+              <Button 
+                onClick={() => setShowForm(true)} 
+                className="w-full"
+              >
+                <PlusIcon size={16} className="mr-2" />
+                Upload New Asset
+              </Button>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Evaluated Concepts</CardTitle>
+                  <CardDescription>
+                    Compare your concepts side by side
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {concepts.length > 0 ? (
+                    <ul className="space-y-2">
+                      {concepts.map((concept, index) => (
+                        <li key={index} className="flex items-center justify-between p-3 bg-white rounded-md border">
+                          <div className="flex items-center gap-3">
+                            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: concept.color }}></div>
+                            <div>
+                              <span className="font-medium">{concept.name}</span>
+                              <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">
+                                {concept.source === 'ai-generated' ? 'AI Rated' : 'Manual'}
+                              </span>
                             </div>
-                            <div className="flex gap-2">
-                              {user && (
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => handleSaveConcept(concept)}
-                                  aria-label={`Save ${concept.name}`}
-                                >
-                                  <SaveIcon size={16} />
-                                </Button>
-                              )}
+                          </div>
+                          <div className="flex gap-2">
+                            {user && (
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                onClick={() => removeConcept(index)}
-                                aria-label={`Remove ${concept.name}`}
+                                onClick={() => handleSaveConcept(concept)}
+                                aria-label={`Save ${concept.name}`}
                               >
-                                <Trash2Icon size={16} />
+                                <SaveIcon size={16} />
                               </Button>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="text-gray-500 text-center py-4">No concepts added yet</p>
-                    )}
+                            )}
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => removeConcept(index)}
+                              aria-label={`Remove ${concept.name}`}
+                            >
+                              <Trash2Icon size={16} />
+                            </Button>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-gray-500 text-center py-4">No concepts added yet</p>
+                  )}
+                </CardContent>
+              </Card>
+              {!user && (
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-center flex-col gap-2 py-2">
+                      <p className="text-gray-600 text-center">Sign in to save your concepts</p>
+                      <Button 
+                        variant="outline" 
+                        onClick={() => navigate("/auth")}
+                        className="mt-2"
+                      >
+                        <LogInIcon size={16} className="mr-2" />
+                        Sign In
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
-                {!user && (
-                  <Card>
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-center flex-col gap-2 py-2">
-                        <p className="text-gray-600 text-center">Sign in to save your concepts</p>
-                        <Button 
-                          variant="outline" 
-                          onClick={() => navigate("/auth")}
-                          className="mt-2"
-                        >
-                          <LogInIcon size={16} className="mr-2" />
-                          Sign In
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
+        </div>
 
-          <div>
-            <Card className="h-full">
-              <CardHeader>
-                <CardTitle>
-                  {concepts.length === 0
-                    ? "EDGES Creative Evaluation"
-                    : concepts.length === 1
-                    ? `EDGES Creative Evaluation: ${concepts[0].name}`
-                    : "EDGES Creative Evaluation Comparison"}
-                </CardTitle>
-                <CardDescription>
-                  Visualization of your creative evaluation
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {concepts.length > 0 ? (
-                  <div className="w-full aspect-square max-w-md mx-auto">
-                    <EdgesRadarChart concepts={concepts} />
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center h-64 text-center">
-                    <p className="text-gray-500 mb-4">Upload an asset to see the radar chart visualization</p>
-                    {!showForm && (
-                      <Button onClick={() => setShowForm(true)} variant="outline">
-                        Upload Asset
-                      </Button>
-                    )}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
+        <div>
+          <Card className="h-full">
+            <CardHeader>
+              <CardTitle>
+                {concepts.length === 0
+                  ? "EDGES Creative Evaluation"
+                  : concepts.length === 1
+                  ? `EDGES Creative Evaluation: ${concepts[0].name}`
+                  : "EDGES Creative Evaluation Comparison"}
+              </CardTitle>
+              <CardDescription>
+                Visualization of your creative evaluation
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {concepts.length > 0 ? (
+                <div className="w-full aspect-square max-w-md mx-auto">
+                  <EdgesRadarChart concepts={concepts} />
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-64 text-center">
+                  <p className="text-gray-500 mb-4">Upload an asset to see the radar chart visualization</p>
+                  {!showForm && (
+                    <Button onClick={() => setShowForm(true)} variant="outline">
+                      Upload Asset
+                    </Button>
+                  )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
