@@ -62,11 +62,22 @@ const EdgesRadarChart = ({ concepts }: EdgesRadarChartProps) => {
 
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <RadarChart outerRadius="80%" data={chartData}>
+      <RadarChart 
+        outerRadius="80%" 
+        data={chartData}
+        margin={{ top: 20, right: 20, bottom: 20, left: 20 }} // Added margin to provide more space
+      >
         <PolarGrid strokeDasharray="3 3" />
         <PolarAngleAxis
           dataKey="criterion"
-          tick={{ fill: "#4B5563", fontSize: 12, fontWeight: 500 }}
+          tick={{ 
+            fill: "#4B5563", 
+            fontSize: 10, 
+            fontWeight: 500,
+            angle: -30, // Slightly angle the labels to prevent overlap
+            textAnchor: "end" // Adjust text anchor for better positioning
+          }}
+          axisLine={false} // Optional: remove axis line for cleaner look
         />
         <PolarRadiusAxis
           angle={90}
