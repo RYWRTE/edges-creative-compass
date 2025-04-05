@@ -1,44 +1,48 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import EdgesRadarChart from "@/components/EdgesRadarChart";
 import AssetUpload from "@/components/AssetUpload";
 import { Concept, BrandCollection } from "@/types/concept";
 import { Button } from "@/components/ui/button";
-import { PlusIcon, Trash2Icon, SaveIcon, LogInIcon, FolderIcon } from "lucide-react";
+import { PlusIcon, Trash2Icon, SaveIcon, LogInIcon, FolderIcon, PencilIcon } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { saveConcept, fetchUserConcepts } from "@/services/conceptService";
 import AuthButton from "@/components/AuthButton";
 import { v4 as uuidv4 } from 'uuid';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 const Index = () => {
   const [concepts, setConcepts] = useState<Concept[]>([]);
   const [collections, setCollections] = useState<BrandCollection[]>([]);
   const [showForm, setShowForm] = useState(true);
   const [user, setUser] = useState<any>(null);
+  const [editingConcept, setEditingConcept] = useState<{index: number, name: string} | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setUser(session?.user ?? null);
         
-        // If user is logged in, fetch their concepts
         if (session?.user) {
           loadUserConcepts();
         }
       }
     );
 
-    // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       
-      // If user is logged in, fetch their concepts
       if (session?.user) {
         loadUserConcepts();
       }
@@ -53,7 +57,6 @@ const Index = () => {
       setConcepts(userConcepts);
       setShowForm(false);
       
-      // Group concepts by brand name to create collections
       const brandGroups = userConcepts.reduce((groups: Record<string, Concept[]>, concept) => {
         const brandName = concept.brandName || 'Uncategorized';
         if (!groups[brandName]) {
@@ -63,7 +66,6 @@ const Index = () => {
         return groups;
       }, {});
       
-      // Create brand collections from the groups
       const brandCollections: BrandCollection[] = Object.entries(brandGroups).map(([name, concepts]) => ({
         id: uuidv4(),
         name,
@@ -76,7 +78,6 @@ const Index = () => {
   };
 
   const addConcept = (concept: Concept) => {
-    // Generate a new color for this concept
     const colors = [
       "#3B82F6", // blue
       "#EF4444", // red
@@ -90,14 +91,12 @@ const Index = () => {
     
     concept.color = colors[concepts.length % colors.length];
     
-    // Set source if not already specified
     if (!concept.source) {
       concept.source = 'manual';
     }
     
     setConcepts([...concepts, concept]);
     
-    // Update collections if the concept has a brand name
     if (concept.brandName) {
       updateCollections(concept);
     }
@@ -115,12 +114,10 @@ const Index = () => {
     const existingCollectionIndex = collections.findIndex(c => c.name === brandName);
     
     if (existingCollectionIndex >= 0) {
-      // Update existing collection
       const updatedCollections = [...collections];
       updatedCollections[existingCollectionIndex].concepts.push(concept);
       setCollections(updatedCollections);
     } else {
-      // Create a new collection
       const newCollection: BrandCollection = {
         id: uuidv4(),
         name: brandName,
@@ -137,7 +134,6 @@ const Index = () => {
     updatedConcepts.splice(index, 1);
     setConcepts(updatedConcepts);
     
-    // Update collections by removing the concept
     if (removedConcept.brandName) {
       const updatedCollections = collections.map(collection => {
         if (collection.name === removedConcept.brandName) {
@@ -170,6 +166,49 @@ const Index = () => {
     }
     
     await saveConcept(concept);
+  };
+
+  const handleEditConcept = (index: number) => {
+    setEditingConcept({
+      index,
+      name: concepts[index].name
+    });
+  };
+
+  const handleUpdateConceptName = () => {
+    if (editingConcept) {
+      const updatedConcepts = [...concepts];
+      updatedConcepts[editingConcept.index] = {
+        ...updatedConcepts[editingConcept.index],
+        name: editingConcept.name
+      };
+      
+      setConcepts(updatedConcepts);
+
+      const updatedConcept = updatedConcepts[editingConcept.index];
+      if (updatedConcept.brandName) {
+        const updatedCollections = collections.map(collection => {
+          if (collection.name === updatedConcept.brandName) {
+            return {
+              ...collection,
+              concepts: collection.concepts.map(c => 
+                c === concepts[editingConcept.index] ? updatedConcept : c
+              )
+            };
+          }
+          return collection;
+        });
+        
+        setCollections(updatedCollections);
+      }
+      
+      setEditingConcept(null);
+      
+      toast({
+        title: "Concept updated",
+        description: `"${updatedConcept.name}" has been updated.`,
+      });
+    }
   };
 
   return (
@@ -218,6 +257,14 @@ const Index = () => {
                             </div>
                           </div>
                           <div className="flex gap-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleEditConcept(index)}
+                              aria-label={`Edit ${concept.name}`}
+                            >
+                              <PencilIcon size={16} />
+                            </Button>
                             {user && (
                               <Button
                                 variant="ghost"
@@ -299,6 +346,34 @@ const Index = () => {
           </Card>
         </div>
       </div>
+
+      <Dialog open={editingConcept !== null} onOpenChange={(open) => !open && setEditingConcept(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Asset Name</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <Input 
+              id="edit-asset-name"
+              value={editingConcept?.name || ''}
+              onChange={(e) => setEditingConcept(prev => prev ? {...prev, name: e.target.value} : null)}
+              placeholder="Enter new asset name"
+              className="w-full mb-4"
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditingConcept(null)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleUpdateConceptName}
+              disabled={!editingConcept?.name}
+            >
+              Save Changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
