@@ -7,8 +7,9 @@ import { fetchUserConcepts } from "@/services/conceptService";
 import { Concept } from "@/types/concept";
 import EdgesRadarChart from "@/components/EdgesRadarChart";
 import { ArrowLeft, FileImage, BarChart3 } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import SubscriptionUsageTracker from "@/components/SubscriptionUsageTracker";
+import UserProfileSection from "@/components/UserProfileSection";
 
 const Dashboard = () => {
   const [concepts, setConcepts] = useState<Concept[]>([]);
@@ -63,6 +64,8 @@ const Dashboard = () => {
         </Link>
         <h1 className="text-3xl font-bold text-gray-900">Evaluation Dashboard</h1>
       </div>
+
+      <UserProfileSection />
 
       <div className="mb-6">
         <SubscriptionUsageTracker />
