@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Mail, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -49,7 +49,7 @@ export default function UserProfileSection() {
   const [userEmail, setUserEmail] = useState<string | undefined>();
 
   // Fetch user email on component mount
-  useState(() => {
+  useEffect(() => {
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setUserEmail(user?.email);
