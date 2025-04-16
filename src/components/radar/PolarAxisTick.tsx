@@ -1,4 +1,3 @@
-
 import { Concept } from "@/types/concept";
 import React from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -29,19 +28,28 @@ export const PolarAxisTick = (props: PolarAxisTickProps) => {
   const centerY = 175; // Approximate center Y of chart
   const angle = Math.atan2(y - centerY, x - centerX) * (180 / Math.PI);
   
-  // Adjust positioning based on angle with increased distances for label placement
-  if (angle > -45 && angle < 45) { // Right side
-    alignment = "start";
-    xOffset = isMobile ? 15 : 28;
-  } else if (angle > 45 && angle < 135) { // Bottom side
-    alignment = "middle";
-    yOffset = isMobile ? 18 : 30;
-  } else if ((angle > 135 && angle <= 180) || (angle >= -180 && angle < -135)) { // Left side
-    alignment = "end";
-    xOffset = isMobile ? -15 : -28;
-  } else { // Top side
-    alignment = "middle";
-    yOffset = isMobile ? -18 : -30;
+  // Adjust positioning specifically for SUBVERSIVE label
+  if (payload.value === "SUBVERSIVE") {
+    // Slightly increase the offset to move it further from the graph
+    if (angle > 135 && angle <= 180) { // Left side
+      alignment = "end";
+      xOffset = isMobile ? -25 : -40;
+    }
+  } else {
+    // Existing positioning logic
+    if (angle > -45 && angle < 45) { // Right side
+      alignment = "start";
+      xOffset = isMobile ? 15 : 28;
+    } else if (angle > 45 && angle < 135) { // Bottom side
+      alignment = "middle";
+      yOffset = isMobile ? 18 : 30;
+    } else if ((angle > 135 && angle <= 180) || (angle >= -180 && angle < -135)) { // Left side
+      alignment = "end";
+      xOffset = isMobile ? -15 : -28;
+    } else { // Top side
+      alignment = "middle";
+      yOffset = isMobile ? -18 : -30;
+    }
   }
   
   return (
