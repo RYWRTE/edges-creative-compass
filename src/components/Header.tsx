@@ -1,10 +1,12 @@
+
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { 
   LayoutDashboard, 
   BarChart, 
   FileSpreadsheet,
-  DollarSign 
+  DollarSign,
+  TestTube
 } from "lucide-react";
 import {
   NavigationMenu,
@@ -21,6 +23,13 @@ import PricingModal from "@/components/PricingModal";
 
 const Header = () => {
   const location = useLocation();
+  const [testMode, setTestMode] = useState(false);
+
+  const toggleTestMode = () => {
+    setTestMode(!testMode);
+    // Store test mode state in localStorage
+    localStorage.setItem('testMode', (!testMode).toString());
+  };
   
   return (
     <header className="border-b bg-white">
@@ -129,6 +138,19 @@ const Header = () => {
               Try the Tool
             </Link>
           </Button>
+          
+          {process.env.NODE_ENV === 'development' && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={toggleTestMode}
+              className={`${location.pathname === "/tool" ? "hidden" : ""} ${testMode ? "bg-purple-100" : ""}`}
+            >
+              <TestTube className="h-4 w-4 mr-2" />
+              Test Mode {testMode ? "On" : "Off"}
+            </Button>
+          )}
+
           <Button 
             variant="outline" 
             size="sm" 
